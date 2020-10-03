@@ -10,11 +10,26 @@ module Looper
       @exit = false
 
       @items = [
-        MenuItem.new(text: "start", x: 100, y: 100, focused: true),
-        MenuItem.new(text: "options", x: 100, y: 200),
-        MenuItem.new(text: "exit", x: 100, y: 300)
+        MenuItem.new(text: "start", focused: true),
+        MenuItem.new(text: "exit")
       ]
       @focus_index = 0
+
+      arrange_items
+    end
+
+    def arrange_items
+      height = @items.map(&.height).sum
+
+      x = Game.screen_width / 2_f32
+      y = Game.screen_height / 2_f32 - height / 2_f32
+
+      @items.each do |item|
+        item.x = x - item.width / 2_f32
+        item.y = y
+
+        y += item.height
+      end
     end
 
     def update(frame_time)
@@ -61,7 +76,6 @@ module Looper
 
     def select_item
       item = @items[@focus_index]
-      item.select
 
       if item.text == "start"
         hide
