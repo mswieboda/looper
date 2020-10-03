@@ -34,7 +34,7 @@ module Looper
     end
 
     def self.turning
-      150
+      100
     end
 
     def accelerate(frame_time)
@@ -42,11 +42,17 @@ module Looper
     end
 
     def turn_left(frame_time)
-      @rotation -= self.class.turning * frame_time
+      turn(-frame_time)
     end
 
     def turn_right(frame_time)
-      @rotation += self.class.turning * frame_time
+      turn(frame_time)
+    end
+
+    def turn(time_and_direction)
+      return unless @acceleration > 0
+
+      @rotation += self.class.turning * time_and_direction
     end
 
     def update(frame_time)

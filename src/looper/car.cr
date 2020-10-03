@@ -15,8 +15,12 @@ module Looper
       @sprite = Sprite.get(:car)
     end
 
-    def self.acceleration_amount
-      30
+    def self.acceleration
+      15
+    end
+
+    def self.turning
+      150
     end
 
     def update(frame_time)
