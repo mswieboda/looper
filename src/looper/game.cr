@@ -11,13 +11,16 @@ module Looper
         debug: DEBUG,
         draw_fps: DEBUG
       )
+
+      @course = Course.new
     end
 
     def update(frame_time)
+      @course.update(frame_time)
     end
 
     def draw
-      Rectangle.new(x: 100, y: 100, width: 100, height: 500).draw
+      @course.draw
     end
   end
 end
