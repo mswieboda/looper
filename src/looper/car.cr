@@ -2,14 +2,17 @@ require "./vehicle"
 
 module Looper
   class Car < Vehicle
-    def initialize(x, y, width, height, color = Color::Red)
+    @sprite : Sprite
+
+    def initialize(x, y)
       super(
         x: x,
         y: y,
-        width: width,
-        height: height,
-        color: color
+        width: 64,
+        height: 24,
       )
+
+      @sprite = Sprite.get(:car)
     end
 
     def self.acceleration_amount
@@ -21,13 +24,11 @@ module Looper
     end
 
     def draw
-      Rectangle.new(
+      @sprite.draw(
         x: x,
         y: y,
-        width: width,
-        height: height,
-        color: color
-      ).draw
+        rotation: rotation
+      )
     end
   end
 end

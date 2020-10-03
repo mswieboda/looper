@@ -4,19 +4,24 @@ module Looper
 
     delegate :x, :x=, :y, :y=, to: car
 
-    def initialize(x, y, color = Color::Red)
+    def initialize(x, y)
       @car = Car.new(
         x: x,
         y: y,
-        width: 64,
-        height: 24,
-        color: color
       )
     end
 
     def update(frame_time)
       if Keys.down?([Key::Up, Key::W])
         car.accelerate(frame_time)
+      end
+
+      if Keys.down?([Key::Left, Key::A])
+        car.turn_left(frame_time)
+      end
+
+      if Keys.down?([Key::Right, Key::D])
+        car.turn_right(frame_time)
       end
 
       car.update(frame_time)

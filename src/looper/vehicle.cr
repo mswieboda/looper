@@ -2,6 +2,8 @@ require "./obj"
 
 module Looper
   abstract class Vehicle < Obj
+    property rotation : Int32 | Float32
+
     @speed : Int32 | Float32
     @acceleration : Int32 | Float32
 
@@ -14,8 +16,9 @@ module Looper
         color: color
       )
 
-      @speed = 0_f32
-      @acceleration = 0_f32
+      @speed = 0
+      @acceleration = 0
+      @rotation = 0
     end
 
     def self.acceleration
@@ -30,8 +33,20 @@ module Looper
       5
     end
 
+    def self.turning
+      30
+    end
+
     def accelerate(frame_time)
       @acceleration += self.class.acceleration * frame_time
+    end
+
+    def turn_left(frame_time)
+      @rotation -= self.class.turning * frame_time
+    end
+
+    def turn_right(frame_time)
+      @rotation += self.class.turning * frame_time
     end
 
     def update(frame_time)

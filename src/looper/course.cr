@@ -9,8 +9,8 @@ module Looper
       )
 
       @player = Player.new(
-        x: 55,
-        y: 55
+        x: 50,
+        y: 50
       )
     end
 
