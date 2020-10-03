@@ -1,12 +1,13 @@
 module Looper
   class Road < Obj
-    def initialize(x, y, width, height, color = Color::Gray)
+    property color : Color
+
+    def initialize(x, y, width, height, @color = Color::Gray)
       super(
         x: x,
         y: y,
         width: width,
         height: height,
-        color: color
       )
     end
 

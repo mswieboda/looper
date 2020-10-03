@@ -7,13 +7,12 @@ module Looper
     @speed : Int32 | Float32
     @acceleration : Int32 | Float32
 
-    def initialize(x, y, width, height, color = Color::Red)
+    def initialize(x, y, width, height)
       super(
         x: x,
         y: y,
         width: width,
-        height: height,
-        color: color
+        height: height
       )
 
       @speed = 0

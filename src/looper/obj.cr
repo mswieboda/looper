@@ -4,9 +4,8 @@ module Looper
     property y : Int32 | Float32
     property width : Int32
     property height : Int32
-    property color : Color
 
-    def initialize(@x, @y, @width, @height, @color)
+    def initialize(@x, @y, @width, @height)
     end
 
     def update(frame_time)
