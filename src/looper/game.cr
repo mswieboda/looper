@@ -41,17 +41,19 @@ module Looper
       end
 
       @course.update(frame_time)
-      Message.message.update(frame_time)
-
-      @hud.loops = @course.loops
 
       if @course.game_over?
-        if !Message.shown?
+        if !Message.shown? && !Message.done?
           Message.show("Game Over!")
         elsif Message.done?
+          @course = Course.new
           @menu.show
         end
       end
+
+      Message.message.update(frame_time)
+
+      @hud.loops = @course.loops
     end
 
     def draw

@@ -46,7 +46,6 @@ module Looper
     def focus(asc = true, wrap = true)
       @items[@focus_index].blur
 
-      # @focus_index += direction
       @focus_index = asc ? @focus_index + 1 : @focus_index - 1
 
       if wrap

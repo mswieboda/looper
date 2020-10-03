@@ -47,6 +47,8 @@ module Looper
     end
 
     def update(frame_time)
+      @done = false
+
       return unless shown?
 
       @delay += frame_time
@@ -55,7 +57,6 @@ module Looper
 
       if Keys.any_pressed?
         hide
-        @done = true
       end
     end
 
