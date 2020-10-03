@@ -6,6 +6,8 @@ module Looper
     def initialize
       super(
         name: "looper",
+        screen_width: 1080,
+        screen_height: 640,
         target_fps: TARGET_FPS,
         audio: false,
         debug: DEBUG,
