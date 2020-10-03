@@ -11,7 +11,11 @@ module Looper
       )
     end
 
-    def update(frame_time)
+    def update(frame_time, roads : Array(Obj))
+      unless car.collision?(roads)
+        puts ">>> off road!"
+      end
+
       if Keys.down?([Key::Up, Key::W])
         car.accelerate(frame_time)
       end
