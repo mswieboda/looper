@@ -1,6 +1,6 @@
 module Looper
   class Game < Game
-    DEBUG = true
+    DEBUG = false
     TARGET_FPS = 60
 
     def initialize
@@ -20,6 +20,7 @@ module Looper
 
       @menu = Menu.new
       @course = Course.new
+      @hud = HeadsUpDisplay.new
     end
 
     def load_sprites
@@ -42,6 +43,8 @@ module Looper
       @course.update(frame_time)
       Message.message.update(frame_time)
 
+      @hud.loops = @course.loops
+
       if @course.game_over?
         if !Message.shown?
           Message.show("Game Over!")
@@ -59,6 +62,7 @@ module Looper
 
       @course.draw
       Message.message.draw
+      @hud.draw
     end
 
     def close?

@@ -5,7 +5,11 @@ module Looper
     property width : Int32
     property height : Int32
 
-    def initialize(@x, @y, @width, @height)
+    HIT_BOX_COLOR = Color::Red
+
+    @hit_box_color : Color
+
+    def initialize(@x, @y, @width, @height, @hit_box_color = HIT_BOX_COLOR)
     end
 
     def update(frame_time)
@@ -21,7 +25,7 @@ module Looper
         y: y,
         width: width,
         height: height,
-        color: Color::Red,
+        color: @hit_box_color,
         filled: false
       )
     end

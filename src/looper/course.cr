@@ -2,10 +2,12 @@ module Looper
   class Course
     GAME_OVER_DELAY = 0.3
 
+    getter loops : UInt16
     getter? game_over_started
 
     @game_over_delay : Float32
     @roads : Array(Road)
+    @checkpoints : Array(Checkpoint)
 
     def initialize
       @roads = [
@@ -19,9 +21,15 @@ module Looper
         Road.new(x: 100, y: 100, width: 100, height: 100),
       ]
 
+      @checkpoints = [
+        Checkpoint.new(x: 300, y: 25, width: 50, height: 150),
+        Checkpoint.new(x: 300, y: 475, width: 50, height: 150),
+      ]
+
       @player = Player.new(x: 250, y: 100)
       @game_over_started = false
       @game_over_delay = 0_f32
+      @loops = 0_u8
     end
 
     def update(frame_time)
@@ -37,10 +45,18 @@ module Looper
       else
         @game_over_started = true
       end
+
+      if @checkpoints.all?(&.passed?) && @player.collision?(@checkpoints.first)
+        @loops += 1
+        @checkpoints.each(&.reset)
+      else
+        @checkpoints.reject(&.passed?).select { |c| @player.collision?(c) }.each(&.pass)
+      end
     end
 
     def draw
       @roads.each(&.draw)
+      @checkpoints.each(&.draw) if Game::DEBUG
       @player.draw
     end
 
