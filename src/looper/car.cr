@@ -31,8 +31,11 @@ module Looper
       @sprite.draw(
         x: x,
         y: y,
+        centered: true,
         rotation: rotation
       )
+
+      super
     end
   end
 end

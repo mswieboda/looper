@@ -71,6 +71,20 @@ module Looper
     end
 
     def draw
+      hit_box.draw if Game::DEBUG
+    end
+
+    def hit_box
+      max = [width, height].max
+
+      Rectangle.new(
+        x: x - max / 2_f32,
+        y: y - max / 2_f32,
+        width: max,
+        height: max,
+        color: Color::Red,
+        filled: false
+      )
     end
   end
 end

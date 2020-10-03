@@ -1,6 +1,6 @@
 module Looper
   class Game < Game
-    DEBUG = false
+    DEBUG = true
     TARGET_FPS = 60
 
     def initialize
@@ -23,8 +23,6 @@ module Looper
       Sprite.load({
         :car => {
           filename: "../assets/car.png",
-          # width: 64,
-          # height: 24,
           width: 64,
           height: 24,
           loops: false,
