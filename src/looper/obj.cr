@@ -13,6 +13,7 @@ module Looper
     end
 
     def draw
+      hit_box.draw if Game::DEBUG
     end
 
     def hit_box
