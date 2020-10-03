@@ -2,8 +2,8 @@ require "./obj"
 
 module Looper
   abstract class Vehicle < Obj
-    @speed : Float32
-    @acceleration : Float32
+    @speed : Int32 | Float32
+    @acceleration : Int32 | Float32
 
     def initialize(x, y, width, height, color = Color::Red)
       super(
@@ -18,19 +18,30 @@ module Looper
       @acceleration = 0_f32
     end
 
-    def self.acceleration_amount
+    def self.acceleration
       10
     end
 
+    def self.max_acceleration
+      100
+    end
+
+    def self.drag
+      5
+    end
+
     def accelerate(frame_time)
-      amount = self.class.acceleration_amount
-
-      puts ">>> accelerate, amount: #{amount}"
-
-      @acceleration += self.class.acceleration_amount * frame_time
+      @acceleration += self.class.acceleration * frame_time
     end
 
     def update(frame_time)
+      if @acceleration > 0
+        @x += @acceleration
+
+        # reduce acceleration each frame
+        @acceleration -= (self.class.drag * frame_time)
+        @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
+      end
     end
 
     def draw

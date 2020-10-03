@@ -17,6 +17,7 @@ module Looper
     end
 
     def update(frame_time)
+      super(frame_time)
     end
 
     def draw
