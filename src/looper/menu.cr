@@ -10,7 +10,7 @@ module Looper
       @exit = false
 
       @items = [
-        MenuItem.new(text: "start", x: 100, y: 100),
+        MenuItem.new(text: "start", x: 100, y: 100, focused: true),
         MenuItem.new(text: "options", x: 100, y: 200),
         MenuItem.new(text: "exit", x: 100, y: 300)
       ]
@@ -69,6 +69,10 @@ module Looper
       elsif item.text == "exit"
         @exit = true
       end
+    end
+
+    def show
+      @shown = true
     end
 
     def hide

@@ -27,13 +27,7 @@ module Looper
     def update(frame_time)
       return if game_over?
 
-      if game_over_started?
-        @game_over_delay += frame_time
-
-        if game_over?
-          Message.show("Game Over!")
-        end
-      end
+      @game_over_delay += frame_time if game_over_started?
 
       @roads.each(&.update(frame_time))
       @player.update(frame_time)

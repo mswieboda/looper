@@ -1,6 +1,7 @@
 module Looper
   class Message
     getter? shown
+    getter? done
 
     @text_color : LibRay::Color
 
@@ -24,8 +25,17 @@ module Looper
       @@message.show(message)
     end
 
+    def self.shown?
+      message.shown?
+    end
+
+    def self.done?
+      message.done?
+    end
+
     def initialize
       @shown = false
+      @done = false
       @delay = 0_f32
 
       @default_font = LibRay.get_font_default
@@ -43,7 +53,10 @@ module Looper
 
       return if delay?
 
-      hide if Keys.any_pressed?
+      if Keys.any_pressed?
+        hide
+        @done = true
+      end
     end
 
     def draw
@@ -147,6 +160,7 @@ module Looper
 
     def hide
       @shown = false
+      @done = true
       @text = ""
       @delay = 0_f32
       update_text_measured
