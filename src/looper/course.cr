@@ -1,5 +1,7 @@
 module Looper
   class Course
+    getter? game_over
+
     @roads : Array(Road)
 
     def initialize
@@ -18,12 +20,15 @@ module Looper
     end
 
     def update(frame_time)
+      return if game_over?
+
       @roads.each(&.update(frame_time))
       @player.update(frame_time)
 
       if @player.collision?(@roads)
         @player.movement(frame_time)
       else
+        @game_over = true
         Message.show("Game Over!")
       end
     end
