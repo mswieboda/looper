@@ -8,7 +8,7 @@ module Looper
       super(
         x: x,
         y: y,
-        width: 64,
+        width: 56,
         height: 24,
       )
 
