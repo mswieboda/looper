@@ -2,12 +2,16 @@ name: looper
 version: 0.1.0
 
 authors:
-  - your-name-here <your-email-here>
+  - Matt Swieboda <mswieboda@users.noreply.github.com>
 
 targets:
   looper:
     main: src/looper.cr
 
 crystal: 0.35.1
+
+dependencies:
+  game:
+    github: mswieboda/game
 
 license: MIT
