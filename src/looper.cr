@@ -1,6 +1,11 @@
-# TODO: Write documentation for `Looper`
-module Looper
-  VERSION = "0.1.0"
+require "game"
 
-  # TODO: Put your code here
+require "./looper/**"
+
+module Looper
+  def self.run
+    Game.new.run
+  end
 end
+
+Looper.run
