@@ -19,7 +19,13 @@ module Looper
 
     def update(frame_time)
       @roads.each(&.update(frame_time))
-      @player.update(frame_time, @roads)
+      @player.update(frame_time)
+
+      if @player.collision?(@roads)
+        @player.movement(frame_time)
+      else
+        Message.show("Game Over!")
+      end
     end
 
     def draw

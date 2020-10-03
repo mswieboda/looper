@@ -2,7 +2,7 @@ module Looper
   class Player
     getter car : Vehicle
 
-    delegate :x, :x=, :y, :y=, to: car
+    delegate :x, :x=, :y, :y=, :collision?, :collisions?, to: car
 
     def initialize(x, y)
       @car = Car.new(
@@ -11,11 +11,15 @@ module Looper
       )
     end
 
-    def update(frame_time, roads : Array(Obj))
-      unless car.collision?(roads)
-        puts ">>> off road!"
-      end
+    def update(frame_time)
+      car.update(frame_time)
+    end
 
+    def draw
+      car.draw
+    end
+
+    def movement(frame_time)
       if Keys.down?([Key::Up, Key::W])
         car.accelerate(frame_time)
       end
@@ -27,12 +31,6 @@ module Looper
       if Keys.down?([Key::Right, Key::D])
         car.turn_right(frame_time)
       end
-
-      car.update(frame_time)
-    end
-
-    def draw
-      car.draw
     end
   end
 end

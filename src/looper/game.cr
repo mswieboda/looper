@@ -16,6 +16,8 @@ module Looper
 
       load_sprites
 
+      Message.init
+
       @course = Course.new
     end
 
@@ -32,10 +34,12 @@ module Looper
 
     def update(frame_time)
       @course.update(frame_time)
+      Message.message.update(frame_time)
     end
 
     def draw
       @course.draw
+      Message.message.draw
     end
   end
 end
