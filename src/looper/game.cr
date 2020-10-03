@@ -1,6 +1,6 @@
 module Looper
   class Game < Game
-    DEBUG = false
+    DEBUG = true
     TARGET_FPS = 60
 
     def initialize
@@ -18,6 +18,7 @@ module Looper
 
       Message.init
 
+      @menu = Menu.new
       @course = Course.new
     end
 
@@ -33,13 +34,27 @@ module Looper
     end
 
     def update(frame_time)
+      if @menu.shown?
+        @menu.update(frame_time)
+        return
+      end
+
       @course.update(frame_time)
       Message.message.update(frame_time)
     end
 
     def draw
+      if @menu.shown?
+        @menu.draw
+        return
+      end
+
       @course.draw
       Message.message.draw
+    end
+
+    def close?
+      @menu.exit?
     end
   end
 end

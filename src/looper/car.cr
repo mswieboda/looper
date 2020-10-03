@@ -39,7 +39,7 @@ module Looper
     end
 
     def hit_box
-      max = [width, height].max
+      max = [width, height].max / 2_f32
 
       Rectangle.new(
         x: x - max / 2_f32,
