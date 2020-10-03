@@ -26,3 +26,14 @@ builds/looper: builds
 
 release: clean_if_diff builds/looper
 	@env LD_LIBRARY_PATH="$(PWD)/lib_ext" ./builds/looper
+
+pack: clean builds/looper
+	@echo "packing to builds/pack"
+	@rm -rf ./builds/pack
+	@mkdir ./builds/pack
+	@mkdir ./builds/pack/bin
+	@cp ./builds/looper ./builds/pack/bin
+	@cp -r ./assets ./builds/pack
+	@cp -r ./lib_ext ./builds/pack
+	@cp -r ./looper.sh ./builds/pack
+	@open /Applications/Platypus.app ./looper.platypus
