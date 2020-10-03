@@ -22,11 +22,11 @@ module Looper
     end
 
     def self.acceleration
-      10
+      15
     end
 
     def self.max_acceleration
-      100
+      50
     end
 
     def self.drag
@@ -34,7 +34,7 @@ module Looper
     end
 
     def self.turning
-      30
+      150
     end
 
     def accelerate(frame_time)
@@ -50,13 +50,18 @@ module Looper
     end
 
     def update(frame_time)
-      if @acceleration > 0
-        @x += @acceleration
+      movement(frame_time)
+    end
 
-        # reduce acceleration each frame
-        @acceleration -= (self.class.drag * frame_time)
-        @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
-      end
+    def movement(frame_time)
+      return unless @acceleration > 0
+
+      @x += Trig.rotate_x(rotation) * @acceleration
+      @y += Trig.rotate_y(rotation) * @acceleration
+
+      # reduce acceleration each frame
+      @acceleration -= (self.class.drag * frame_time)
+      @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
     end
 
     def draw
