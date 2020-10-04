@@ -11,9 +11,6 @@ module Looper
       )
     end
 
-    def update(frame_time)
-    end
-
     def draw
       Rectangle.new(
         x: x,

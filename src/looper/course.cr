@@ -7,18 +7,17 @@ module Looper
 
     @game_over_delay : Float32
     @roads : Array(Road)
+    @road_turns : Array(RoadTurn)
     @checkpoints : Array(Checkpoint)
 
     def initialize
       @roads = [
-        Road.new(x: 100, y: 50, width: 750, height: 100),
-        Road.new(x: 750, y: 100, width: 100, height: 100),
-        Road.new(x: 800, y: 100, width: 100, height: 450),
-        Road.new(x: 750, y: 450, width: 100, height: 100),
-        Road.new(x: 100, y: 500, width: 750, height: 100),
-        Road.new(x: 100, y: 450, width: 100, height: 100),
-        Road.new(x: 50, y: 100, width: 100, height: 450),
-        Road.new(x: 100, y: 100, width: 100, height: 100),
+        Road.new(x: 100, y: 50, width: 650, height: 100),
+        Road.new(x: 100, y: 500, width: 650, height: 100),
+      ]
+
+      @road_turns = [
+        RoadTurn.new(x: 750, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3)
       ]
 
       @checkpoints = [
@@ -37,7 +36,6 @@ module Looper
 
       @game_over_delay += frame_time if game_over_started?
 
-      @roads.each(&.update(frame_time))
       @player.update(frame_time)
 
       if @player.collision?(@roads)
@@ -56,6 +54,7 @@ module Looper
 
     def draw
       @roads.each(&.draw)
+      @road_turns.each(&.draw)
       @checkpoints.each(&.draw) if Game::DEBUG
       @player.draw
     end
