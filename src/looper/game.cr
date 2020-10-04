@@ -31,6 +31,12 @@ module Looper
           height: 24,
           loops: false,
         },
+        :accents => {
+          filename: "../assets/accents.png",
+          width: 8,
+          height: 8,
+          loops: false,
+        }
       })
     end
 

@@ -32,6 +32,7 @@ module Looper
           @tiles << Grass.new(x: x * Tile::SIZE, y: y * Tile::SIZE)
         end
       end
+      # @tiles << Grass.new(x: 300, y: 0)
 
       # roads / checkpoints
       @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
