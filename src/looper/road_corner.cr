@@ -6,11 +6,11 @@ module Looper
     @corner : Triangle
     @points : Array(Circle)
 
-    def initialize(@x, @y, size = 50, h_size = 1, v_size = 1, color = Color::Gray)
+    def initialize(@x, @y, size = 50, h_size = 1, v_size = 1, h_flip = false, v_flip = false, color = Color::Gray)
       points = [
         {x: x, y: y + size * v_size, color: Color::Red},
         {x: x, y: y, color: Color::Green},
-        {x: x + size * h_size, y: y + size * v_size, color: Color::Blue}
+        {x: x + size * h_size, y: v_flip ? y : y + size * v_size, color: Color::Blue}
       ]
 
       @corner = Triangle.new(

@@ -22,9 +22,9 @@ module Looper
 
       @road_corners << RoadCorner.new(x: 850, y: 50, h_size: 2, v_size: 2)
       @road_turns << RoadTurn.new(x: 750, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3)
-      # @road_corners << RoadCorner.new(x: 0, y: 0)
+      @road_corners << RoadCorner.new(x: 850, y: 500, h_size: 2, v_size: 2, v_flip: true)
 
-      @roads << Road.new(x: 100, y: 500, width: 650, height: 100)
+      @roads << Road.new(x: 100, y: 500, width: 750, height: 100)
       @checkpoints << Checkpoint.new(x: 300, y: 475, width: 50, height: 150)
 
       @player = Player.new(x: 250, y: 100)
