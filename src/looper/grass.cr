@@ -13,7 +13,10 @@ module Looper
       @accent = nil
 
       if rand <= ACCENT_RATIO
-        @accent = Accent.new(x: x, y: y)
+        @accent = Accent.new(
+          x: rand(x..x + size - Accent::SIZE),
+          y: rand(y..y + size - Accent::SIZE)
+        )
       end
     end
 

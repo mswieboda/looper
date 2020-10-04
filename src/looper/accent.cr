@@ -3,10 +3,12 @@ require "./tile"
 module Looper
   class Accent
     COLOR = Color::Green
+    SIZE = 8
 
     property x : Int32 | Float32
     property y : Int32 | Float32
-    property size : Int32
+
+    delegate :width, :height, to: @sprite
 
     enum Design
       Road
@@ -31,7 +33,7 @@ module Looper
       end
     end
 
-    def initialize(@x, @y, @size = Tile::SIZE, @design = Design::Grass)
+    def initialize(@x, @y, @design = Design::Grass)
       @sprite = Sprite.get(:accents)
       @sprite.frame = @design.rand_frame
     end
