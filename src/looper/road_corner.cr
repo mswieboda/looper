@@ -23,10 +23,13 @@ module Looper
         color: color
       )
 
-      point_colors = [Color::Red, Color::Green, Color::Blue]
-      @points = points.map_with_index do |p, index|
-        Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: point_colors[index])
+      @points = points.map do |p|
+        Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: p[:color])
       end
+    end
+
+    def collision?(obj : Obj)
+      obj.collision?(@corner)
     end
 
     def draw

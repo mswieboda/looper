@@ -121,12 +121,15 @@ module Looper
         )
       end
 
-      point_colors = [Color::Red, Color::Green, Color::Blue]
       @points = triangles.flat_map do |triangle_points|
-        triangle_points.map_with_index do |p, index|
-          Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: point_colors[index])
+        triangle_points.map do |p|
+          Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: p[:color])
         end
       end
+    end
+
+    def collision?(obj : Obj)
+      obj.collision?(@blocks) || obj.collision?(@tris)
     end
 
     def draw
