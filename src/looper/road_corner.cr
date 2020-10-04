@@ -8,8 +8,8 @@ module Looper
 
     def initialize(@x, @y, size = 50, h_size = 1, v_size = 1, h_flip = false, v_flip = false, color = Color::Gray)
       points = [
-        {x: x, y: y + size * v_size, color: Color::Red},
-        {x: x, y: y, color: Color::Green},
+        {x: h_flip && v_flip ? x + size * h_size : x, y: y + size * v_size, color: Color::Red},
+        {x: h_flip && !v_flip ? x + size * h_size : x, y: y, color: Color::Green},
         {x: x + size * h_size, y: v_flip ? y : y + size * v_size, color: Color::Blue}
       ]
 

@@ -17,15 +17,19 @@ module Looper
       @checkpoints = [] of Checkpoint
 
       # roads / checkpoints
-      @roads << Road.new(x: 100, y: 50, width: 750, height: 100)
+      @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 300, y: 25, width: 50, height: 150)
 
       @road_corners << RoadCorner.new(x: 850, y: 50, h_size: 2, v_size: 2)
       @road_turns << RoadTurn.new(x: 750, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3)
       @road_corners << RoadCorner.new(x: 850, y: 500, h_size: 2, v_size: 2, v_flip: true)
 
-      @roads << Road.new(x: 100, y: 500, width: 750, height: 100)
+      @roads << Road.new(x: 250, y: 500, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 300, y: 475, width: 50, height: 150)
+
+      @road_corners << RoadCorner.new(x: 150, y: 500, h_size: 2, v_size: 2, h_flip: true, v_flip: true)
+      # @road_turns << RoadTurn.new(x: 50, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3) #, h_flip: true
+      @road_corners << RoadCorner.new(x: 150, y: 50, h_size: 2, v_size: 2, h_flip: true)
 
       @player = Player.new(x: 250, y: 100)
       @game_over_started = false
