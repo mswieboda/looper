@@ -31,11 +31,17 @@ module Looper
           height: 24,
           loops: false,
         },
-        :accents => {
-          filename: "../assets/accents.png",
+        :grass_accents => {
+          filename: "../assets/grass_accents.png",
           width: 8,
           height: 8,
           loops: false,
+        },
+        :river_accents => {
+          filename: "../assets/river_accents.png",
+          width: 8,
+          height: 8,
+          loops: true,
         }
       })
     end

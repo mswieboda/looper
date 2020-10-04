@@ -8,6 +8,7 @@ module Looper
     @game_over_delay : Float32
 
     @tiles : Array(Tile)
+    @rivers : Array(River)
     @roads : Array(Road)
     @road_turns : Array(RoadTurn)
     @checkpoints : Array(Checkpoint)
@@ -17,22 +18,30 @@ module Looper
       @game_over_delay = 0_f32
       @loops = 0_u8
 
+      @rivers = [] of River
       @tiles = [] of Tile
       @roads = [] of Road
       @road_corners = [] of RoadCorner
       @road_turns = [] of RoadTurn
       @checkpoints = [] of Checkpoint
 
-      # tiles
       tiles_x = (Game.screen_width / Tile::SIZE).to_i
       tiles_y = (Game.screen_height / Tile::SIZE).to_i
 
+      # rivers
+      rivers_y = 300
+      (0..tiles_x).each do |x|
+        @rivers << River.new(x: x * Tile::SIZE, y: rivers_y)
+      end
+
+      # tiles
       (0..tiles_x).each do |x|
         (0..tiles_y).each do |y|
+          next if @rivers.any? { |r| r.x == x && r.y == y }
           @tiles << Grass.new(x: x * Tile::SIZE, y: y * Tile::SIZE)
         end
       end
-      # @tiles << Grass.new(x: 300, y: 0)
+
 
       # roads / checkpoints
       @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
@@ -58,6 +67,7 @@ module Looper
 
       @game_over_delay += frame_time if game_over_started?
 
+      @rivers.each(&.update(frame_time))
       @player.update(frame_time)
 
       if @player.collision?(@roads) || @road_corners.any?(&.collision?(@player.car)) || @road_turns.any?(&.collision?(@player.car))
@@ -76,6 +86,7 @@ module Looper
 
     def draw
       @tiles.each(&.draw)
+      @rivers.each(&.draw)
       @roads.each(&.draw)
       @road_corners.each(&.draw)
       @road_turns.each(&.draw)
