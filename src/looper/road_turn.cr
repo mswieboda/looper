@@ -7,32 +7,78 @@ module Looper
     @blocks : Array(Rectangle)
     @points : Array(Circle)
 
-    def initialize(@x, @y, size = 50, h_size = 1, h_gap = 0, v_size = 1, v_gap = 0, color = Color::Gray)
+    def initialize(@x, @y, size = 50, h_size = 1, h_gap = 0, v_size = 1, v_gap = 0, h_flip = false, color = Color::Gray)
       @tris = [] of Triangle
       @blocks = [] of Rectangle
 
       triangles = [
         # top half of curve
         [
-          {x: x + size * h_size, y: y + size * v_size, color: Color::Red},
-          {x: x, y: y, color: Color::Green},
-          {x: x + size * h_size, y: y, color: Color::Blue}
+          {
+            x: x + size * h_size,
+            y: y + size * v_size,
+            color: Color::Red
+          },
+          {
+            x: x,
+            y: h_flip ? y + size * v_size : y,
+            color: Color::Green},
+          {
+            x: x + size * h_size,
+            y: y,
+            color: Color::Blue
+          }
         ],
         [
-          {x: x + size * (h_size + h_gap), y: y + size * v_size, color: Color::Red},
-          {x: x + size * (h_size + h_gap), y: y, color: Color::Green},
-          {x: x + size * (h_size * 2 + h_gap), y: y + size * v_size, color: Color::Blue}
+          {
+            x: x + size * (h_size + h_gap),
+            y: y + size * v_size,
+            color: Color::Red
+          },
+          {
+            x: x + size * (h_size + h_gap),
+            y: y,
+            color: Color::Green
+          },
+          {
+            x: x + size * (h_size * 2 + h_gap),
+            y: h_flip ? y : y + size * v_size,
+            color: Color::Blue
+          }
         ],
         # bottom half of curve
         [
-          {x: x, y: y + size * (v_size * 2 + v_gap), color: Color::Red},
-          {x: x + size * h_size, y: y + size * (v_size + v_gap), color: Color::Green},
-          {x: x + size * h_size, y: y + size * (v_size * 2 + v_gap), color: Color::Blue}
+          {
+            x: x,
+            y: y + size * (v_size * (h_flip ? 1 : 2) + v_gap),
+            color: Color::Red
+          },
+          {
+            x: x + size * h_size,
+            y: y + size * (v_size + v_gap),
+            color: Color::Green
+          },
+          {
+            x: x + size * h_size,
+            y: y + size * (v_size * 2 + v_gap),
+            color: Color::Blue
+          }
         ],
         [
-          {x: x + size * (h_size + h_gap), y: y + size * (v_size * 2 + v_gap), color: Color::Red},
-          {x: x + size * (h_size + h_gap), y: y + size * (v_size + v_gap), color: Color::Green},
-          {x: x + size * (h_size * 2 + h_gap), y: y + size * (v_size + v_gap), color: Color::Blue}
+          {
+            x: x + size * (h_size + h_gap),
+            y: y + size * (v_size * 2 + v_gap),
+            color: Color::Red},
+          {
+            x: x + size * (h_size + h_gap),
+            y: y + size * (v_size + v_gap),
+            color: Color::Green
+          },
+          {
+            x: x + size * (h_size * 2 + h_gap),
+            y: y + size * (v_size * (h_flip ? 2 : 1) + v_gap),
+            color: Color::Blue
+          }
         ],
       ]
 
@@ -67,7 +113,7 @@ module Looper
 
       if v_gap > 0
         @blocks << Rectangle.new(
-          x: x + size * h_size,
+          x: h_flip ? x : x + size * h_size,
           y: y + size * v_size,
           width: size * h_size + size * h_gap,
           height: size * v_gap,
