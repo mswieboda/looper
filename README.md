@@ -2,14 +2,6 @@
 
 Game entry for [Ludum Dare 47](https://ldjam.com/events/ludum-dare/47)
 
-## Installation
-
-TODO: Write installation instructions here
-
-## Usage
-
-TODO: Write usage instructions here
-
 ## Contributing
 
 1. Fork it (<https://github.com/mswieboda/looper/fork>)
