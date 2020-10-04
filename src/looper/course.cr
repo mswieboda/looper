@@ -6,15 +6,32 @@ module Looper
     getter? game_over_started
 
     @game_over_delay : Float32
+
+    @tiles : Array(Tile)
     @roads : Array(Road)
     @road_turns : Array(RoadTurn)
     @checkpoints : Array(Checkpoint)
 
     def initialize
+      @game_over_started = false
+      @game_over_delay = 0_f32
+      @loops = 0_u8
+
+      @tiles = [] of Tile
       @roads = [] of Road
       @road_corners = [] of RoadCorner
       @road_turns = [] of RoadTurn
       @checkpoints = [] of Checkpoint
+
+      # tiles
+      tiles_x = (Game.screen_width / Tile::SIZE).to_i
+      tiles_y = (Game.screen_height / Tile::SIZE).to_i
+
+      (0..tiles_x).each do |x|
+        (0..tiles_y).each do |y|
+          @tiles << Grass.new(x: x * Tile::SIZE, y: y * Tile::SIZE)
+        end
+      end
 
       # roads / checkpoints
       @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
@@ -31,10 +48,8 @@ module Looper
       @road_turns << RoadTurn.new(x: 50, y: 150, h_gap: 1, h_size: 2, v_size: 2, v_gap: 3, h_flip: true)
       @road_corners << RoadCorner.new(x: 150, y: 50, h_size: 2, v_size: 2, h_flip: true)
 
+      # player
       @player = Player.new(x: 250, y: 100)
-      @game_over_started = false
-      @game_over_delay = 0_f32
-      @loops = 0_u8
     end
 
     def update(frame_time)
@@ -59,6 +74,7 @@ module Looper
     end
 
     def draw
+      @tiles.each(&.draw)
       @roads.each(&.draw)
       @road_corners.each(&.draw)
       @road_turns.each(&.draw)
