@@ -29,7 +29,23 @@ module Looper
       end
 
       @rails = [] of RoadRail
-      @rails << RoadRail.new(v1: Vector.new(x: @corner.x2, y: @corner.y2), v2: Vector.new(x: @corner.x3, y: @corner.y3))
+      # TODO: needs different lines for h_flip, v_flip
+      if !h_flip && !v_flip
+        @rails << RoadRail.new(
+          v1: Vector.new(x: @corner.x2, y: @corner.y2),
+          v2: Vector.new(x: @corner.x3, y: @corner.y3)
+        )
+      elsif !h_flip && v_flip
+        @rails << RoadRail.new(
+          v1: Vector.new(x: @corner.x3, y: @corner.y3),
+          v2: Vector.new(x: @corner.x1, y: @corner.y1)
+        )
+      elsif h_flip
+        @rails << RoadRail.new(
+          v1: Vector.new(x: @corner.x1, y: @corner.y1),
+          v2: Vector.new(x: @corner.x2, y: @corner.y2)
+        )
+      end
     end
 
     def collision?(obj : Obj)
