@@ -5,6 +5,7 @@ module Looper
 
     @corner : Triangle
     @points : Array(Circle)
+    @rails : Array(RoadRail)
 
     def initialize(@x, @y, size = 50, h_size = 1, v_size = 1, h_flip = false, v_flip = false, color = Color::Gray)
       points = [
@@ -26,6 +27,9 @@ module Looper
       @points = points.map do |p|
         Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: p[:color])
       end
+
+      @rails = [] of RoadRail
+      @rails << RoadRail.new(v1: Vector.new(x: @corner.x2, y: @corner.y2), v2: Vector.new(x: @corner.x3, y: @corner.y3))
     end
 
     def collision?(obj : Obj)
@@ -34,6 +38,7 @@ module Looper
 
     def draw
       @corner.draw
+      @rails.each(&.draw)
       @points.each(&.draw) if Game::DEBUG
     end
   end

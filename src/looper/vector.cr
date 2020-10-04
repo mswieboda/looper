@@ -6,6 +6,10 @@ module Looper
     def initialize(@x = 0, @y = 0)
     end
 
+    def to_struct
+      LibRay::Vector2.new(x: x, y: y)
+    end
+
     def subtract(v : Vector) : Vector
       self.class.new(x: x - v.x, y: y - v.y)
     end
