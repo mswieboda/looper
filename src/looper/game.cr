@@ -1,6 +1,6 @@
 module Looper
   class Game < Game
-    DEBUG = true
+    DEBUG = false
     TARGET_FPS = 60
 
     def initialize
