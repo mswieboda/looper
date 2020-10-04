@@ -11,8 +11,6 @@ module Looper
       @tris = [] of Triangle
       @blocks = [] of Rectangle
 
-      p_index = 0
-
       triangles = [
         # top half of curve
         [
@@ -88,7 +86,7 @@ module Looper
     def draw
       @tris.each(&.draw)
       @blocks.each(&.draw)
-      @points.each(&.draw)
+      @points.each(&.draw) if Game::DEBUG
     end
   end
 end

@@ -11,19 +11,21 @@ module Looper
     @checkpoints : Array(Checkpoint)
 
     def initialize
-      @roads = [
-        Road.new(x: 100, y: 50, width: 650, height: 100),
-        Road.new(x: 100, y: 500, width: 650, height: 100),
-      ]
+      @roads = [] of Road
+      @road_corners = [] of RoadCorner
+      @road_turns = [] of RoadTurn
+      @checkpoints = [] of Checkpoint
 
-      @road_turns = [
-        RoadTurn.new(x: 750, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3)
-      ]
+      # roads / checkpoints
+      @roads << Road.new(x: 100, y: 50, width: 750, height: 100)
+      @checkpoints << Checkpoint.new(x: 300, y: 25, width: 50, height: 150)
 
-      @checkpoints = [
-        Checkpoint.new(x: 300, y: 25, width: 50, height: 150),
-        Checkpoint.new(x: 300, y: 475, width: 50, height: 150),
-      ]
+      @road_corners << RoadCorner.new(x: 850, y: 50, h_size: 2, v_size: 2)
+      @road_turns << RoadTurn.new(x: 750, y: 150, h_gap: 2, h_size: 2, v_size: 2, v_gap: 3)
+      # @road_corners << RoadCorner.new(x: 0, y: 0)
+
+      @roads << Road.new(x: 100, y: 500, width: 650, height: 100)
+      @checkpoints << Checkpoint.new(x: 300, y: 475, width: 50, height: 150)
 
       @player = Player.new(x: 250, y: 100)
       @game_over_started = false
@@ -54,6 +56,7 @@ module Looper
 
     def draw
       @roads.each(&.draw)
+      @road_corners.each(&.draw)
       @road_turns.each(&.draw)
       @checkpoints.each(&.draw) if Game::DEBUG
       @player.draw
