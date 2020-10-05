@@ -4,12 +4,13 @@ module Looper
   class Car < Vehicle
     @sprite : Sprite
 
-    def initialize(x, y)
+    def initialize(x, y, player = false)
       super(
         x: x,
         y: y,
         width: 56,
         height: 24,
+        player: player,
       )
 
       @sprite = Sprite.get(:car)

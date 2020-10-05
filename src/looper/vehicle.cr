@@ -2,15 +2,17 @@ require "./obj"
 
 module Looper
   abstract class Vehicle < Obj
-    property rotation : Int32 | Float32
-    getter last_rotation : Int32 | Float32
-    property? drifting
-    property? braking
+    getter rotation : Int32 | Float32
+    getter? drifting
+    getter? braking
+    getter? reverse
+    getter? player
 
     @speed : Int32 | Float32
     @acceleration : Int32 | Float32
+    @last_rotation : Int32 | Float32
 
-    def initialize(x, y, width, height)
+    def initialize(x, y, width, height, @player = false)
       super(
         x: x,
         y: y,
@@ -24,6 +26,7 @@ module Looper
       @last_rotation = 0
       @drifting = false
       @braking = false
+      @reverse = false
     end
 
     def self.acceleration
@@ -47,8 +50,8 @@ module Looper
     end
 
     def accelerate(frame_time)
-      return if braking?
-      @acceleration += self.class.acceleration * frame_time
+      return if braking? && !reverse?
+      @acceleration += self.class.acceleration * frame_time * (reverse? ? -1 : 1)
     end
 
     def turn_left(frame_time)
@@ -73,11 +76,11 @@ module Looper
       return unless @acceleration > 0
 
       # last rotation used for drifting
-      @last_rotation += (rotation - last_rotation) * self.class.drift * frame_time
+      @last_rotation += (rotation - @last_rotation) * self.class.drift * frame_time
 
       if drifting?
-        @x += Trig.rotate_x(last_rotation) * @acceleration
-        @y += Trig.rotate_y(last_rotation) * @acceleration
+        @x += Trig.rotate_x(@last_rotation) * @acceleration
+        @y += Trig.rotate_y(@last_rotation) * @acceleration
       else
         @x += Trig.rotate_x(rotation) * @acceleration
         @y += Trig.rotate_y(rotation) * @acceleration
@@ -86,6 +89,34 @@ module Looper
       # reduce acceleration each frame
       @acceleration -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
       @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
+    end
+
+    def input(frame_time)
+      return unless player?
+
+      if Keys.down?([Key::Up, Key::W])
+        accelerate(frame_time)
+      end
+
+      if Keys.down?([Key::Left, Key::A])
+        turn_left(frame_time)
+      end
+
+      if Keys.down?([Key::Right, Key::D])
+        turn_right(frame_time)
+      end
+
+      if Keys.pressed?([Key::LShift, Key::RShift])
+        @drifting = true
+      elsif Keys.released?([Key::LShift, Key::RShift])
+        @drifting = false
+      end
+
+      if Keys.pressed?([Key::Down, Key::S])
+        @braking = true
+      elsif Keys.released?([Key::Down, Key::S])
+        @braking = false
+      end
     end
 
     def draw

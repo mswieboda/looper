@@ -71,7 +71,7 @@ module Looper
       @player.update(frame_time)
 
       if @player.collision?(@roads) || @road_corners.any?(&.collision?(@player.car)) || @road_turns.any?(&.collision?(@player.car))
-        @player.movement(frame_time)
+        @player.input(frame_time)
       else
         @game_over_started = true
       end
