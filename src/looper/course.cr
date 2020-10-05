@@ -97,7 +97,7 @@ module Looper
           restart
           @paused = false
           @menu.hide
-        elsif @menu.change?
+        elsif @menu.difficulty?
           change_difficulty(@menu.difficulty)
           restart
           @paused = false

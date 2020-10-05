@@ -20,5 +20,12 @@ module Looper
     def back
       hide
     end
+
+    def draw
+      return unless shown?
+
+      draw_header("difficulty")
+      super
+    end
   end
 end

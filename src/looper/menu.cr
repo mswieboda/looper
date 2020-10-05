@@ -73,6 +73,26 @@ module Looper
       ).draw
     end
 
+    def draw_header(text : String)
+      padding = 25
+
+      x = Game.screen_width / 2_f32
+      y = padding
+
+      item = MenuItem.new(x: x, y: y, text: text, padding: padding)
+      item.x = x - item.width / 2_f32
+
+      Rectangle.new(
+        x: item.x,
+        y: item.y,
+        width: item.width,
+        height: item.height,
+        color: Color::Black,
+      ).draw
+
+      item.draw
+    end
+
     def back
       # to be overriden
     end

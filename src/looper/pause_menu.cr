@@ -1,6 +1,6 @@
 module Looper
   class PauseMenu < Menu
-    ITEMS = %w(resume restart change exit)
+    ITEMS = %w(resume restart difficulty exit)
 
     delegate :difficulty, to: @difficulty_menu
 
@@ -29,7 +29,7 @@ module Looper
 
       @item = item.text
 
-      if @item == "change"
+      if @item == "difficulty"
         @difficulty_menu.show
       else
         @done = true
@@ -45,7 +45,10 @@ module Looper
     def hide
       @item = ""
       @difficulty_menu.hide
+
+      @items[@focus_index].blur
       @focus_index = 0
+      @items[@focus_index].focus
 
       super
     end
@@ -55,7 +58,14 @@ module Looper
     end
 
     def draw
-      @difficulty_menu.shown? ? @difficulty_menu.draw : super
+      return unless shown?
+
+      if @difficulty_menu.shown?
+        @difficulty_menu.draw
+      else
+        draw_header("paused")
+        super
+      end
     end
   end
 end

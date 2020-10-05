@@ -42,7 +42,14 @@ module Looper
     end
 
     def draw
-      @difficulty_menu.shown? ? @difficulty_menu.draw : super
+      return unless shown?
+
+      if @difficulty_menu.shown?
+        @difficulty_menu.draw
+      else
+        draw_header("looper")
+        super
+      end
     end
   end
 end
