@@ -38,7 +38,8 @@ module Looper
 
     def back
       return if @difficulty_menu.shown?
-      hide
+      @item = "resume"
+      @done = true
     end
 
     def hide

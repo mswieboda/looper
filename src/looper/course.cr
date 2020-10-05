@@ -103,6 +103,8 @@ module Looper
           @paused = false
           @menu.hide
         end
+
+        return
       end
 
       return if paused?
