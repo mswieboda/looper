@@ -18,9 +18,11 @@ module Looper
 
       Message.init
 
-      @menu = Menu.new
+      @menu = MainMenu.new
       @course = Course.new
       @hud = HeadsUpDisplay.new
+
+      @menu.show
     end
 
     def load_sprites
@@ -60,7 +62,6 @@ module Looper
         @menu.update(frame_time)
 
         if @menu.done?
-          @menu.done = false
           @course.difficulty = @menu.difficulty
           @menu.hide
         end

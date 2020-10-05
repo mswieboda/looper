@@ -1,87 +1,34 @@
 module Looper
-  class Menu
-    getter? exit
+  abstract class Menu
     getter? shown
-    getter? difficulty_shown
-    getter difficulty : String
     property? done
 
     @items : Array(MenuItem)
-    @difficulty_items : Array(MenuItem)
 
-    def initialize
-      @shown = true
+    def initialize(items : Array(String))
+      @shown = false
       @exit = false
       @focus_index = 0
-      @focus_difficulty_index = 0
-      @difficulty_shown = false
-      @difficulty = ""
       @done = false
 
-      @items = [
-        MenuItem.new(text: "start"),
-        MenuItem.new(text: "exit")
-      ]
-
-      @difficulty_items = [
-        MenuItem.new(text: "noob"),
-        MenuItem.new(text: "elite")
-      ]
+      @items = items.map { |item| MenuItem.new(text: item) }
 
       reset_items
     end
 
-    def items
-      difficulty_shown? ? @difficulty_items : @items
-    end
-
-    def focus_index
-      difficulty_shown? ? @focus_index : @focus_difficulty_index
-    end
-
-    def focus_index_first
-      if difficulty_shown?
-        @focus_index = 0
-      else
-        @focus_difficulty_index = 0
-      end
-    end
-
-    def focus_index_last
-      index = items.size - 1
-
-      if difficulty_shown?
-        @focus_index = index
-      else
-        @focus_difficulty_index = index
-      end
-    end
-
-    def focus_index_add(value : Int8)
-      if difficulty_shown?
-        @focus_index += value
-      else
-        @focus_difficulty_index += value
-      end
-    end
-
-    def focused_item
-      items[focus_index]
-    end
-
     def items_width
-      items.map(&.width).max
+      @items.map(&.width).max
     end
 
     def items_height
-      items.map(&.height).sum
+      @items.map(&.height).sum
     end
 
     def arrange_items
       x = Game.screen_width / 2_f32
       y = Game.screen_height / 2_f32 - items_height / 2_f32
 
-      items.each do |item|
+      @items.each do |item|
         item.x = x - item.width / 2_f32
         item.y = y
 
@@ -106,7 +53,7 @@ module Looper
 
       draw_background
 
-      items.each(&.draw)
+      @items.each(&.draw)
     end
 
     def draw_background
@@ -133,23 +80,23 @@ module Looper
     end
 
     def focus(asc = true, wrap = true)
-      focused_item.blur
+      @items[@focus_index].blur
 
-      focus_index_add(asc ? 1_i8 : -1_i8)
+      @focus_index += asc ? 1 : -1
 
       if wrap
-        if focus_index >= items.size
-          focus_index_first
-        elsif focus_index < 0
-          focus_index_last
+        if @focus_index >= @items.size
+          @focus_index = 0
+        elsif @focus_index < 0
+          @focus_index = @items.size - 1
         end
       end
 
-      focused_item.focus
+      @items[@focus_index].focus
     end
 
     def select_item
-      item = focused_item
+      item = @items[@focus_index]
       item.blur
 
       if difficulty_shown?
@@ -160,7 +107,6 @@ module Looper
           @difficulty_shown = true
           reset_items
         elsif item.text == "exit"
-          puts ">>> Menu exit"
           @exit = true
         end
       end
@@ -171,13 +117,13 @@ module Looper
     end
 
     def reset_items
-      focused_item.focus
+      @items[@focus_index].focus
       arrange_items
     end
 
     def hide
       @shown = false
-      @difficulty_shown = false
+      @done = false
 
       reset_items
     end
