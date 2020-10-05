@@ -13,7 +13,7 @@ module Looper
 
       @items = items.map { |item| MenuItem.new(text: item) }
 
-      reset_items
+      arrange_items
     end
 
     def items_width
@@ -45,6 +45,8 @@ module Looper
         focus_last
       elsif Keys.pressed?([Key::Enter, Key::Space, Key::LShift, Key::RShift])
         select_item
+      elsif Keys.pressed?([Key::Escape, Key::Backspace])
+        back
       end
     end
 
@@ -69,6 +71,10 @@ module Looper
         height: items_height + padding * 2,
         color: Color::Black,
       ).draw
+    end
+
+    def back
+      # to be overriden
     end
 
     def focus_next
@@ -96,36 +102,19 @@ module Looper
     end
 
     def select_item
-      item = @items[@focus_index]
-      item.blur
-
-      if difficulty_shown?
-        @difficulty = item.text
-        @done = true
-      else
-        if item.text == "start"
-          @difficulty_shown = true
-          reset_items
-        elsif item.text == "exit"
-          @exit = true
-        end
-      end
+      # to be overriden
     end
 
     def show
       @shown = true
-    end
-
-    def reset_items
       @items[@focus_index].focus
-      arrange_items
     end
 
     def hide
       @shown = false
       @done = false
 
-      reset_items
+      @items[@focus_index].blur
     end
   end
 end

@@ -1,38 +1,50 @@
 module Looper
-  class MainMenu < Menu
-    getter? exit
+  class PauseMenu < Menu
+    ITEMS = %w(resume restart change exit)
 
     delegate :difficulty, to: @difficulty_menu
 
+    @item : String
     @difficulty_menu : DifficultyMenu
 
     def initialize
-      super(%w(start exit))
+      super(ITEMS)
 
+      @item = ""
       @difficulty_menu = DifficultyMenu.new
     end
 
+    {% for item in ITEMS %}
+      def {{item.id}}?
+        done? && @item == {{item}}
+      end
+    {% end %}
+
     def done?
-      @difficulty_menu.shown? && @difficulty_menu.done?
+      @difficulty_menu.shown? ? @difficulty_menu.done? : super
     end
 
     def select_item
       item = @items[@focus_index]
 
-      if item.text == "start"
+      @item = item.text
+
+      if @item == "change"
         @difficulty_menu.show
-      elsif item.text == "exit"
-        @exit = true
+      else
+        @done = true
       end
     end
 
     def back
       return if @difficulty_menu.shown?
-      @exit = true
+      hide
     end
 
     def hide
+      @item = ""
       @difficulty_menu.hide
+      @focus_index = 0
 
       super
     end

@@ -14,6 +14,9 @@ module Looper
         draw_fps: DEBUG
       )
 
+      # don't exit with ESC key
+      LibRay.set_exit_key(-1)
+
       load_sprites
 
       Message.init
@@ -63,12 +66,11 @@ module Looper
 
         if @menu.done?
           @course.difficulty = @menu.difficulty
+          @course.paused = false
           @menu.hide
         end
 
         return
-      else
-        @course.paused = false
       end
 
       if @course.game_over?
@@ -98,7 +100,7 @@ module Looper
     end
 
     def close?
-      @menu.exit?
+      @menu.exit? || @course.exit?
     end
   end
 end
