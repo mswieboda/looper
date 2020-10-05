@@ -23,6 +23,10 @@ module Looper
       150
     end
 
+    def self.drift
+      1
+    end
+
     def update(frame_time)
       super(frame_time)
     end

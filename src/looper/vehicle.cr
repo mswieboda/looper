@@ -3,6 +3,7 @@ require "./obj"
 module Looper
   abstract class Vehicle < Obj
     property rotation : Int32 | Float32
+    getter last_rotation : Int32 | Float32
 
     @speed : Int32 | Float32
     @acceleration : Int32 | Float32
@@ -18,6 +19,7 @@ module Looper
       @speed = 0
       @acceleration = 0
       @rotation = 0
+      @last_rotation = 0
     end
 
     def self.acceleration
@@ -34,6 +36,10 @@ module Looper
 
     def self.turning
       100
+    end
+
+    def self.drift
+      10
     end
 
     def accelerate(frame_time)
@@ -63,6 +69,11 @@ module Looper
 
       @x += Trig.rotate_x(rotation) * @acceleration
       @y += Trig.rotate_y(rotation) * @acceleration
+
+      # drift
+      @x += Trig.rotate_x(last_rotation) * @acceleration
+      @y += Trig.rotate_y(last_rotation) * @acceleration
+      @last_rotation += (rotation - last_rotation) * self.class.drift * frame_time
 
       # reduce acceleration each frame
       @acceleration -= (self.class.drag * frame_time)
