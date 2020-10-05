@@ -55,6 +55,12 @@ module Looper
     def update(frame_time)
       if @menu.shown?
         @menu.update(frame_time)
+
+        if @menu.difficulty != ""
+          @course.difficulty = @menu.difficulty
+          @menu.hide
+        end
+
         return
       end
 

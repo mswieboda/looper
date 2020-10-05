@@ -103,5 +103,9 @@ module Looper
     def game_over?
       @game_over_delay >= GAME_OVER_DELAY
     end
+
+    def difficulty=(difficulty)
+      @player.difficulty = difficulty
+    end
   end
 end

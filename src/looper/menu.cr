@@ -2,20 +2,31 @@ module Looper
   class Menu
     getter? exit
     getter? shown
+    getter? difficulty_shown
+    getter difficulty : String
 
     @items : Array(MenuItem)
+    @difficulty_items : Array(MenuItem)
 
     def initialize
       @shown = true
       @exit = false
+      @focus_index = 0
+      @difficulty_shown = false
+      @difficulty = ""
 
       @items = [
-        MenuItem.new(text: "start", focused: true),
+        MenuItem.new(text: "start"),
         MenuItem.new(text: "exit")
       ]
-      @focus_index = 0
-
+      @items[@focus_index].focus
       arrange_items
+
+      @difficulty_items = [
+        MenuItem.new(text: "noob"),
+        MenuItem.new(text: "elite")
+      ]
+      arrange_difficulty_items
     end
 
     def arrange_items
@@ -25,6 +36,20 @@ module Looper
       y = Game.screen_height / 2_f32 - height / 2_f32
 
       @items.each do |item|
+        item.x = x - item.width / 2_f32
+        item.y = y
+
+        y += item.height
+      end
+    end
+
+    def arrange_difficulty_items
+      height = @difficulty_items.map(&.height).sum
+
+      x = Game.screen_width / 2_f32
+      y = Game.screen_height / 2_f32 - height / 2_f32
+
+      @difficulty_items.each do |item|
         item.x = x - item.width / 2_f32
         item.y = y
 
@@ -47,7 +72,11 @@ module Looper
     def draw
       return unless shown?
 
-      @items.each(&.draw)
+      if difficulty_shown?
+        @difficulty_items.each(&.draw)
+      else
+        @items.each(&.draw)
+      end
     end
 
     def focus_next
@@ -59,37 +88,53 @@ module Looper
     end
 
     def focus(asc = true, wrap = true)
-      @items[@focus_index].blur
+      items = difficulty_shown? ? @difficulty_items : @items
+
+      items[@focus_index].blur
 
       @focus_index = asc ? @focus_index + 1 : @focus_index - 1
 
       if wrap
-        if @focus_index >= @items.size
+        if @focus_index >= items.size
           @focus_index = 0
         elsif @focus_index < 0
-          @focus_index = @items.size - 1
+          @focus_index = items.size - 1
         end
       end
 
-      @items[@focus_index].focus
+      items[@focus_index].focus
     end
 
     def select_item
-      item = @items[@focus_index]
+      items = difficulty_shown? ? @difficulty_items : @items
+      item = items[@focus_index]
+      item.blur
 
-      if item.text == "start"
-        hide
-      elsif item.text == "exit"
-        @exit = true
+      if difficulty_shown?
+        @difficulty = item.text
+      else
+        if item.text == "start"
+          @focus_index = 0
+          @difficulty_items[@focus_index].focus
+          @difficulty_shown = true
+        elsif item.text == "exit"
+          puts ">>> Menu exit"
+          @exit = true
+        end
       end
     end
 
     def show
       @shown = true
+      @focus_index = 0
+      @items[@focus_index].focus
     end
 
     def hide
       @shown = false
+      @focus_index = 0
+      @difficulty_shown = false
+      @difficulty = ""
     end
   end
 end
