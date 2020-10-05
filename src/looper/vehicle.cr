@@ -4,6 +4,8 @@ module Looper
   abstract class Vehicle < Obj
     property rotation : Int32 | Float32
     getter last_rotation : Int32 | Float32
+    property? drifting
+    property? braking
 
     @speed : Int32 | Float32
     @acceleration : Int32 | Float32
@@ -20,6 +22,8 @@ module Looper
       @acceleration = 0
       @rotation = 0
       @last_rotation = 0
+      @drifting = false
+      @braking = false
     end
 
     def self.acceleration
@@ -43,6 +47,7 @@ module Looper
     end
 
     def accelerate(frame_time)
+      return if braking?
       @acceleration += self.class.acceleration * frame_time
     end
 
@@ -67,16 +72,19 @@ module Looper
     def movement(frame_time)
       return unless @acceleration > 0
 
-      @x += Trig.rotate_x(rotation) * @acceleration
-      @y += Trig.rotate_y(rotation) * @acceleration
-
-      # drift
-      @x += Trig.rotate_x(last_rotation) * @acceleration
-      @y += Trig.rotate_y(last_rotation) * @acceleration
+      # last rotation used for drifting
       @last_rotation += (rotation - last_rotation) * self.class.drift * frame_time
 
+      if drifting?
+        @x += Trig.rotate_x(last_rotation) * @acceleration
+        @y += Trig.rotate_y(last_rotation) * @acceleration
+      else
+        @x += Trig.rotate_x(rotation) * @acceleration
+        @y += Trig.rotate_y(rotation) * @acceleration
+      end
+
       # reduce acceleration each frame
-      @acceleration -= (self.class.drag * frame_time)
+      @acceleration -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
       @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
     end
 

@@ -31,6 +31,18 @@ module Looper
       if Keys.down?([Key::Right, Key::D])
         car.turn_right(frame_time)
       end
+
+      if Keys.pressed?([Key::LShift, Key::RShift])
+        car.drifting = true
+      elsif Keys.released?([Key::LShift, Key::RShift])
+        car.drifting = false
+      end
+
+      if Keys.pressed?([Key::Down, Key::S])
+        car.braking = true
+      elsif Keys.released?([Key::Down, Key::S])
+        car.braking = false
+      end
     end
   end
 end
