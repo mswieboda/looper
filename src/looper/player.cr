@@ -7,9 +7,8 @@ module Looper
 
     delegate :x, :x=, :y, :y=, :collision?, :collisions?, :input, to: vehicle
 
-    def initialize(x, y, vehicle_class = NOOB_VEHICLE_CLASS)
-      puts "Player init vehicle_class: #{vehicle_class}"
-      @vehicle = vehicle_class.new(
+    def initialize(x, y, difficulty)
+      @vehicle = vehicle_class(difficulty).new(
         x: x,
         y: y,
         player: true
@@ -24,17 +23,18 @@ module Looper
       vehicle.draw
     end
 
-    def difficulty=(difficulty)
-      vehicle_class = NOOB_VEHICLE_CLASS
-      vehicle_class = ELITE_VEHICLE_CLASS if difficulty == "elite"
+    def vehicle_class(difficulty)
+      v_class = NOOB_VEHICLE_CLASS
+      v_class = ELITE_VEHICLE_CLASS if difficulty == "elite"
+      v_class
+    end
 
-      if vehicle_class != @vehicle.class
-        @vehicle = vehicle_class.new(
-          x: x,
-          y: y,
-          player: true
-        )
-      end
+    def difficulty=(difficulty)
+      @vehicle = vehicle_class(difficulty).new(
+        x: x,
+        y: y,
+        player: true
+      )
     end
   end
 end

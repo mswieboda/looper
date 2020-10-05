@@ -4,6 +4,7 @@ module Looper
 
     getter loops : UInt16
     getter? game_over_started
+    property? paused
 
     @game_over_delay : Float32
 
@@ -13,10 +14,11 @@ module Looper
     @road_turns : Array(RoadTurn)
     @checkpoints : Array(Checkpoint)
 
-    def initialize
+    def initialize(difficulty = "")
       @game_over_started = false
       @game_over_delay = 0_f32
       @loops = 0_u8
+      @paused = true
 
       @rivers = [] of River
       @tiles = [] of Tile
@@ -59,15 +61,16 @@ module Looper
       @road_corners << RoadCorner.new(x: 150, y: 50, h_size: 2, v_size: 2, h_flip: true)
 
       # player
-      @player = Player.new(x: 250, y: 100, vehicle_class: Motorcycle)
+      @player = Player.new(x: 250, y: 100, difficulty: difficulty)
     end
 
     def update(frame_time)
-      return if game_over?
+      @rivers.each(&.update(frame_time))
+
+      return if game_over? || paused?
 
       @game_over_delay += frame_time if game_over_started?
 
-      @rivers.each(&.update(frame_time))
       @player.update(frame_time)
 
       if road_collision?

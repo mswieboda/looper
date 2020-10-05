@@ -53,24 +53,28 @@ module Looper
     end
 
     def update(frame_time)
+      @course.update(frame_time)
+
       if @menu.shown?
+        @course.paused = true
         @menu.update(frame_time)
 
-        if @menu.difficulty != ""
+        if @menu.done?
+          @menu.done = false
           @course.difficulty = @menu.difficulty
           @menu.hide
         end
 
         return
+      else
+        @course.paused = false
       end
-
-      @course.update(frame_time)
 
       if @course.game_over?
         if !Message.shown? && !Message.done?
           Message.show("Game Over!")
         elsif Message.done?
-          @course = Course.new
+          @course = Course.new(difficulty: @menu.difficulty)
           @menu.show
         end
       end
@@ -81,12 +85,13 @@ module Looper
     end
 
     def draw
+      @course.draw
+
       if @menu.shown?
         @menu.draw
         return
       end
 
-      @course.draw
       Message.message.draw
       @hud.draw
     end

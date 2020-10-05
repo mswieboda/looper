@@ -4,6 +4,7 @@ module Looper
     getter? shown
     getter? difficulty_shown
     getter difficulty : String
+    property? done
 
     @items : Array(MenuItem)
     @difficulty_items : Array(MenuItem)
@@ -12,44 +13,75 @@ module Looper
       @shown = true
       @exit = false
       @focus_index = 0
+      @focus_difficulty_index = 0
       @difficulty_shown = false
       @difficulty = ""
+      @done = false
 
       @items = [
         MenuItem.new(text: "start"),
         MenuItem.new(text: "exit")
       ]
-      @items[@focus_index].focus
-      arrange_items
 
       @difficulty_items = [
         MenuItem.new(text: "noob"),
         MenuItem.new(text: "elite")
       ]
-      arrange_difficulty_items
+
+      reset_items
     end
 
-    def arrange_items
-      height = @items.map(&.height).sum
+    def items
+      difficulty_shown? ? @difficulty_items : @items
+    end
 
-      x = Game.screen_width / 2_f32
-      y = Game.screen_height / 2_f32 - height / 2_f32
+    def focus_index
+      difficulty_shown? ? @focus_index : @focus_difficulty_index
+    end
 
-      @items.each do |item|
-        item.x = x - item.width / 2_f32
-        item.y = y
-
-        y += item.height
+    def focus_index_first
+      if difficulty_shown?
+        @focus_index = 0
+      else
+        @focus_difficulty_index = 0
       end
     end
 
-    def arrange_difficulty_items
-      height = @difficulty_items.map(&.height).sum
+    def focus_index_last
+      index = items.size - 1
 
+      if difficulty_shown?
+        @focus_index = index
+      else
+        @focus_difficulty_index = index
+      end
+    end
+
+    def focus_index_add(value : Int8)
+      if difficulty_shown?
+        @focus_index += value
+      else
+        @focus_difficulty_index += value
+      end
+    end
+
+    def focused_item
+      items[focus_index]
+    end
+
+    def items_width
+      items.map(&.width).max
+    end
+
+    def items_height
+      items.map(&.height).sum
+    end
+
+    def arrange_items
       x = Game.screen_width / 2_f32
-      y = Game.screen_height / 2_f32 - height / 2_f32
+      y = Game.screen_height / 2_f32 - items_height / 2_f32
 
-      @difficulty_items.each do |item|
+      items.each do |item|
         item.x = x - item.width / 2_f32
         item.y = y
 
@@ -72,11 +104,24 @@ module Looper
     def draw
       return unless shown?
 
-      if difficulty_shown?
-        @difficulty_items.each(&.draw)
-      else
-        @items.each(&.draw)
-      end
+      draw_background
+
+      items.each(&.draw)
+    end
+
+    def draw_background
+      padding = 50
+
+      x = Game.screen_width / 2_f32
+      y = Game.screen_height / 2_f32 - items_height / 2_f32
+
+      Rectangle.new(
+        x: x - items_width / 2_f32 - padding,
+        y: y - padding,
+        width: items_width + padding * 2,
+        height: items_height + padding * 2,
+        color: Color::Black,
+      ).draw
     end
 
     def focus_next
@@ -88,35 +133,32 @@ module Looper
     end
 
     def focus(asc = true, wrap = true)
-      items = difficulty_shown? ? @difficulty_items : @items
+      focused_item.blur
 
-      items[@focus_index].blur
-
-      @focus_index = asc ? @focus_index + 1 : @focus_index - 1
+      focus_index_add(asc ? 1_i8 : -1_i8)
 
       if wrap
-        if @focus_index >= items.size
-          @focus_index = 0
-        elsif @focus_index < 0
-          @focus_index = items.size - 1
+        if focus_index >= items.size
+          focus_index_first
+        elsif focus_index < 0
+          focus_index_last
         end
       end
 
-      items[@focus_index].focus
+      focused_item.focus
     end
 
     def select_item
-      items = difficulty_shown? ? @difficulty_items : @items
-      item = items[@focus_index]
+      item = focused_item
       item.blur
 
       if difficulty_shown?
         @difficulty = item.text
+        @done = true
       else
         if item.text == "start"
-          @focus_index = 0
-          @difficulty_items[@focus_index].focus
           @difficulty_shown = true
+          reset_items
         elsif item.text == "exit"
           puts ">>> Menu exit"
           @exit = true
@@ -126,15 +168,18 @@ module Looper
 
     def show
       @shown = true
-      @focus_index = 0
-      @items[@focus_index].focus
+    end
+
+    def reset_items
+      focused_item.focus
+      arrange_items
     end
 
     def hide
       @shown = false
-      @focus_index = 0
       @difficulty_shown = false
-      @difficulty = ""
+
+      reset_items
     end
   end
 end
