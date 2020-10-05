@@ -59,7 +59,7 @@ module Looper
       @road_corners << RoadCorner.new(x: 150, y: 50, h_size: 2, v_size: 2, h_flip: true)
 
       # player
-      @player = Player.new(x: 250, y: 100)
+      @player = Player.new(x: 250, y: 100, vehicle_class: Motorcycle)
     end
 
     def update(frame_time)
@@ -70,7 +70,7 @@ module Looper
       @rivers.each(&.update(frame_time))
       @player.update(frame_time)
 
-      if @player.collision?(@roads) || @road_corners.any?(&.collision?(@player.car)) || @road_turns.any?(&.collision?(@player.car))
+      if road_collision?
         @player.input(frame_time)
       else
         @game_over_started = true
@@ -92,6 +92,12 @@ module Looper
       @road_turns.each(&.draw)
       @checkpoints.each(&.draw)
       @player.draw
+    end
+
+    def road_collision?
+      @player.collision?(@roads) ||
+        @road_corners.any?(&.collision?(@player.vehicle)) ||
+        @road_turns.any?(&.collision?(@player.vehicle))
     end
 
     def game_over?

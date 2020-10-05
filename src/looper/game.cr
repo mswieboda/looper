@@ -31,6 +31,12 @@ module Looper
           height: 24,
           loops: false,
         },
+        :motorcycle => {
+          filename: "../assets/motorcycle.png",
+          width: 56,
+          height: 24,
+          loops: false,
+        },
         :grass_accents => {
           filename: "../assets/grass_accents.png",
           width: 8,
