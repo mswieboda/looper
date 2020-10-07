@@ -54,6 +54,10 @@ module Looper
       tris
     end
 
+    def collision?(obj : Obj)
+      obj.collision?(tris)
+    end
+
     def draw
       tris.each(&.draw)
     end
