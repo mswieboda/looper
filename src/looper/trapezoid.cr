@@ -35,6 +35,20 @@ module Looper
         color: @color
       )
 
+      tris << Triangle.new(
+        x1: x + @base, y1: y,
+        x2: x + a.to_f32, y2: y - b.to_f32,
+        x3: x + a.to_f32 + @base, y3: y - b.to_f32,
+        color: @color
+      )
+
+      tris << Triangle.new(
+        x1: x + @base, y1: y,
+        x2: x + a.to_f32 + @base, y2: y - b.to_f32,
+        x3: x + @base * 2, y3: y,
+        color: @color
+      )
+
       @tris = tris
 
       tris
