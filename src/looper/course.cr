@@ -55,8 +55,10 @@ module Looper
       @checkpoints << Checkpoint.new(x: 350, y: 25, width: 50, height: 150, show: true)
 
       @road_corners << RoadCorner.new(x: 850, y: 50, h_size: 2, v_size: 2)
-      @road_turns << RoadTurn.new(x: 800, y: 150, h_gap: 1, h_size: 2, v_size: 2, v_gap: 3) #
+      @road_turns << RoadTurn.new(x: 800, y: 150, h_gap: 1, h_size: 2, v_size: 2, v_gap: 3)
       @road_corners << RoadCorner.new(x: 850, y: 500, h_size: 2, v_size: 2, v_flip: true)
+
+      @trap = IsoTrapezoid.new(x: 850, y: 150, angle: 60, rotation: 30, base: 50)
 
       @roads << Road.new(x: 250, y: 500, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 350, y: 475, width: 50, height: 150)
@@ -141,6 +143,7 @@ module Looper
       @roads.each(&.draw)
       @road_corners.each(&.draw)
       @road_turns.each(&.draw)
+      @trap.draw
       @checkpoints.each(&.draw)
       @player.draw
       @menu.draw
@@ -149,7 +152,8 @@ module Looper
     def road_collision?
       @player.collision?(@roads) ||
         @road_corners.any?(&.collision?(@player.vehicle)) ||
-        @road_turns.any?(&.collision?(@player.vehicle))
+        @road_turns.any?(&.collision?(@player.vehicle)) ||
+        @trap.collision?(@player.vehicle)
     end
 
     def game_over?

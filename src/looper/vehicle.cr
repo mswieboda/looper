@@ -78,13 +78,10 @@ module Looper
       # last rotation used for drifting
       @last_rotation += (rotation - @last_rotation) * self.class.drift * frame_time
 
-      if drifting?
-        @x += Trig.rotate_x(@last_rotation).to_f32 * @acceleration
-        @y += Trig.rotate_y(@last_rotation).to_f32 * @acceleration
-      else
-        @x += Trig.rotate_x(rotation).to_f32 * @acceleration
-        @y += Trig.rotate_y(rotation).to_f32 * @acceleration
-      end
+      angle = drifting? ? @last_rotation : rotation
+
+      @x += Trig.rotate_x(@acceleration, angle).to_f32
+      @y += Trig.rotate_y(@acceleration, angle).to_f32
 
       # reduce acceleration each frame
       @acceleration -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
