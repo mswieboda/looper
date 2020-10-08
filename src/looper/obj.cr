@@ -42,6 +42,10 @@ module Looper
       tris.any? { |tri| collision?(tri) }
     end
 
+    def collision?(traps : Array(Trapezoid))
+      traps.any? { |trap| trap.collision?(self) }
+    end
+
     def collision?(obj : Obj)
       collision?(x: obj.hit_box.x, y: obj.hit_box.y, width: obj.hit_box.width, height: obj.hit_box.height)
     end

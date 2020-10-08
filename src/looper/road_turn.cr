@@ -1,141 +1,59 @@
 module Looper
   class RoadTurn
-    property x : Int32 | Float32
-    property y : Int32 | Float32
+    @traps : Array(Trapezoid)
 
-    @tris : Array(Triangle)
-    @blocks : Array(Rectangle)
-    @points : Array(Circle)
+    def initialize(x, y, height, degrees = 180, segments = 9, color = Color::Gray)
+      @traps = [] of Trapezoid
+      traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
 
-    def initialize(@x, @y, size = 50, h_size = 1, h_gap = 0, v_size = 1, v_gap = 0, h_flip = false, color = Color::Gray)
-      @tris = [] of Triangle
-      @blocks = [] of Rectangle
+      rotation_amount = 180 / segments
+      angle = (180 - rotation_amount) / 2
+      last_rotation = 90 - angle
+      new_x = 0
+      new_y = 0
 
-      triangles = [
-        # top half of curve
-        [
-          {
-            x: x + size * h_size,
-            y: y + size * v_size,
-            color: Color::Red
-          },
-          {
-            x: x,
-            y: h_flip ? y + size * v_size : y,
-            color: Color::Green},
-          {
-            x: x + size * h_size,
-            y: y,
-            color: Color::Blue
-          }
-        ],
-        [
-          {
-            x: x + size * (h_size + h_gap),
-            y: y + size * v_size,
-            color: Color::Red
-          },
-          {
-            x: x + size * (h_size + h_gap),
-            y: y,
-            color: Color::Green
-          },
-          {
-            x: x + size * (h_size * 2 + h_gap),
-            y: h_flip ? y : y + size * v_size,
-            color: Color::Blue
-          }
-        ],
-        # bottom half of curve
-        [
-          {
-            x: x,
-            y: y + size * (v_size * (h_flip ? 1 : 2) + v_gap),
-            color: Color::Red
-          },
-          {
-            x: x + size * h_size,
-            y: y + size * (v_size + v_gap),
-            color: Color::Green
-          },
-          {
-            x: x + size * h_size,
-            y: y + size * (v_size * 2 + v_gap),
-            color: Color::Blue
-          }
-        ],
-        [
-          {
-            x: x + size * (h_size + h_gap),
-            y: y + size * (v_size * 2 + v_gap),
-            color: Color::Red},
-          {
-            x: x + size * (h_size + h_gap),
-            y: y + size * (v_size + v_gap),
-            color: Color::Green
-          },
-          {
-            x: x + size * (h_size * 2 + h_gap),
-            y: y + size * (v_size * (h_flip ? 2 : 1) + v_gap),
-            color: Color::Blue
-          }
-        ],
-      ]
+      trap = {
+        x: 0,
+        y: 0,
+        rotation: last_rotation
+      }
+      traps << trap
 
-      triangles.each do |p|
-        @tris << Triangle.new(
-          x1: p[0][:x],
-          y1: p[0][:y],
-          x2: p[1][:x],
-          y2: p[1][:y],
-          x3: p[2][:x],
-          y3: p[2][:y],
-          color: color
-        )
+      more_segments = (degrees / 180 * segments - 1).round.to_i
+      base = height / (more_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
+
+      more_segments.times do |n|
+        trap = {
+          x: new_x + Trig.rotate_x(base * 2, last_rotation),
+          y: new_y + Trig.rotate_y(base * 2, last_rotation),
+          rotation: last_rotation + rotation_amount
+        }
+
+        traps << trap
+
+        new_x = trap[:x]
+        new_y = trap[:y]
+        last_rotation += rotation_amount
       end
 
-      if h_gap > 0
-        @blocks << Rectangle.new(
-          x: x + size * h_size,
-          y: y,
-          width: size * h_gap,
-          height: size * v_size,
-          color: color
+      traps.each do |trap|
+        @traps << Trapezoid.new(
+          x: x + trap[:x].to_f32,
+          y: y - trap[:y].to_f32,
+          angle: angle.to_f32, # 80
+          rotation: trap[:rotation].to_f32,
+          base: base.to_f32,
+          color: Game::DEBUG ? Color.random : color
         )
-        @blocks << Rectangle.new(
-          x: x + size * h_size,
-          y: y + size * (v_size + v_gap),
-          width: size * h_gap,
-          height: size * v_size,
-          color: color
-        )
-      end
-
-      if v_gap > 0
-        @blocks << Rectangle.new(
-          x: h_flip ? x : x + size * h_size,
-          y: y + size * v_size,
-          width: size * h_size + size * h_gap,
-          height: size * v_gap,
-          color: color
-        )
-      end
-
-      @points = triangles.flat_map do |triangle_points|
-        triangle_points.map do |p|
-          Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: p[:color])
-        end
       end
     end
 
     def collision?(obj : Obj)
-      obj.collision?(@blocks) || obj.collision?(@tris)
+      obj.collision?(@traps)
     end
 
     def draw
-      @tris.each(&.draw)
-      @blocks.each(&.draw)
-      @points.each(&.draw) if Game::DEBUG
+      @traps.each(&.draw)
     end
   end
 end
