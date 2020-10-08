@@ -50,13 +50,15 @@ module Looper
 
 
       # roads / checkpoints
-      @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
-      @checkpoints << Checkpoint.new(x: 350, y: 25, width: 50, height: 150, show: true)
+      @roads << Road.new(x: 275, y: 50, width: 475, height: 137)
+      @checkpoints << Checkpoint.new(x: 350, y: 45, width: 50, height: 150, show: true)
 
-      @road_turns << RoadTurn.new(x: 750, y: 600, height: 550)
+      @road_turns << RoadTurn.new(x: 750, y: 600, base: 43)
 
-      @roads << Road.new(x: 250, y: 500, width: 600, height: 100)
-      @checkpoints << Checkpoint.new(x: 350, y: 475, width: 50, height: 150)
+      @roads << Road.new(x: 275, y: 462, width: 475, height: 137)
+      @checkpoints << Checkpoint.new(x: 350, y: 455, width: 50, height: 150)
+
+      @road_turns << RoadTurn.new(x: 275, y: 50, base: 43, start_degrees: 180)
 
       # player
       @player = Player.new(difficulty: @difficulty)

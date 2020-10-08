@@ -2,13 +2,13 @@ module Looper
   class RoadTurn
     @traps : Array(Trapezoid)
 
-    def initialize(x, y, height, degrees = 180, segments = 10, color = Color::Gray)
+    def initialize(x, y, base = 30, degrees = 180, start_degrees = 0, segments = 10, color = Color::Gray)
       @traps = [] of Trapezoid
       traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
 
       rotation_amount = 180 / segments
       angle = (180 - rotation_amount) / 2
-      last_rotation = 90 - angle
+      last_rotation = start_degrees + (90 - angle)
       new_x = 0
       new_y = 0
 
@@ -19,8 +19,9 @@ module Looper
       }
       traps << trap
 
-      height_segments = ([degrees, 180].min / 180 * segments - 1).round.to_i
-      base = height / (height_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
+      # TODO: work on base calc with start_degrees
+      # height_segments = ([degrees, 180].min / 180 * segments - 1).round.to_i
+      # base = height / (height_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
 
       (degrees / 180 * segments - 1).round.to_i.times do |n|
         trap = {
@@ -37,7 +38,6 @@ module Looper
       end
 
       traps.each do |trap|
-        puts "#{trap}"
         @traps << Trapezoid.new(
           x: x + trap[:x].to_f32,
           y: y - trap[:y].to_f32,
