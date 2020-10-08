@@ -1,5 +1,5 @@
 module Looper
-  class IsoTrapezoid
+  class Trapezoid
     getter x : Int32 | Float32
     getter y : Int32 | Float32
     getter angle : Int32 | Float32

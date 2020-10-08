@@ -14,6 +14,7 @@ module Looper
     @rivers : Array(River)
     @roads : Array(Road)
     @road_turns : Array(RoadTurn)
+    @traps : Array(Trapezoid)
     @checkpoints : Array(Checkpoint)
 
     @difficulty : String
@@ -30,6 +31,7 @@ module Looper
       @roads = [] of Road
       @road_corners = [] of RoadCorner
       @road_turns = [] of RoadTurn
+      @traps = [] of Trapezoid
       @checkpoints = [] of Checkpoint
 
       tiles_x = (Game.screen_width / Tile::SIZE).to_i
@@ -54,18 +56,10 @@ module Looper
       @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 350, y: 25, width: 50, height: 150, show: true)
 
-      @road_corners << RoadCorner.new(x: 850, y: 50, h_size: 2, v_size: 2)
-      @road_turns << RoadTurn.new(x: 800, y: 150, h_gap: 1, h_size: 2, v_size: 2, v_gap: 3)
-      @road_corners << RoadCorner.new(x: 850, y: 500, h_size: 2, v_size: 2, v_flip: true)
-
-      @trap = IsoTrapezoid.new(x: 850, y: 150, angle: 60, rotation: 30, base: 50)
+      turn(x: 750, y: 600, height: 200, degrees: 90, segments: 10)
 
       @roads << Road.new(x: 250, y: 500, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 350, y: 475, width: 50, height: 150)
-
-      @road_corners << RoadCorner.new(x: 150, y: 500, h_size: 2, v_size: 2, h_flip: true, v_flip: true)
-      @road_turns << RoadTurn.new(x: 50, y: 150, h_gap: 1, h_size: 2, v_size: 2, v_gap: 3, h_flip: true)
-      @road_corners << RoadCorner.new(x: 150, y: 50, h_size: 2, v_size: 2, h_flip: true)
 
       # player
       @player = Player.new(difficulty: @difficulty)
@@ -74,6 +68,51 @@ module Looper
       @menu = PauseMenu.new
 
       restart
+    end
+
+    def turn(x, y, height, degrees = 180, segments = 9)
+      traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
+
+      rotation_amount = 180 / segments
+      angle = (180 - rotation_amount) / 2
+      last_rotation = 90 - angle
+      new_x = 0
+      new_y = 0
+
+      trap = {
+        x: 0,
+        y: 0,
+        rotation: last_rotation
+      }
+      traps << trap
+
+      more_segments = (degrees / 180 * segments - 1).round.to_i
+      base = height / (more_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
+
+      more_segments.times do |n|
+        trap = {
+          x: new_x + Trig.rotate_x(base * 2, last_rotation),
+          y: new_y + Trig.rotate_y(base * 2, last_rotation),
+          rotation: last_rotation + rotation_amount
+        }
+
+        traps << trap
+
+        new_x = trap[:x]
+        new_y = trap[:y]
+        last_rotation += rotation_amount
+      end
+
+      traps.each do |trap|
+        @traps << Trapezoid.new(
+          x: x + trap[:x].to_f32,
+          y: y - trap[:y].to_f32,
+          angle: angle.to_f32, # 80
+          rotation: trap[:rotation].to_f32,
+          base: base.to_f32,
+          color: Color.random
+        )
+      end
     end
 
     def restart
@@ -143,7 +182,7 @@ module Looper
       @roads.each(&.draw)
       @road_corners.each(&.draw)
       @road_turns.each(&.draw)
-      @trap.draw
+      @traps.each(&.draw)
       @checkpoints.each(&.draw)
       @player.draw
       @menu.draw
@@ -153,7 +192,7 @@ module Looper
       @player.collision?(@roads) ||
         @road_corners.any?(&.collision?(@player.vehicle)) ||
         @road_turns.any?(&.collision?(@player.vehicle)) ||
-        @trap.collision?(@player.vehicle)
+        @traps.any?(&.collision?(@player.vehicle))
     end
 
     def game_over?
