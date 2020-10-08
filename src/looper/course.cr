@@ -53,7 +53,7 @@ module Looper
       @roads << Road.new(x: 250, y: 50, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 350, y: 25, width: 50, height: 150, show: true)
 
-      @road_turns << RoadTurn.new(x: 750, y: 600, height: 550, degrees: 180, segments: 10)
+      @road_turns << RoadTurn.new(x: 750, y: 600, height: 550)
 
       @roads << Road.new(x: 250, y: 500, width: 600, height: 100)
       @checkpoints << Checkpoint.new(x: 350, y: 475, width: 50, height: 150)

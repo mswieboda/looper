@@ -2,7 +2,7 @@ module Looper
   class RoadTurn
     @traps : Array(Trapezoid)
 
-    def initialize(x, y, height, degrees = 180, segments = 9, color = Color::Gray)
+    def initialize(x, y, height, degrees = 180, segments = 10, color = Color::Gray)
       @traps = [] of Trapezoid
       traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
 
@@ -19,10 +19,10 @@ module Looper
       }
       traps << trap
 
-      more_segments = (degrees / 180 * segments - 1).round.to_i
-      base = height / (more_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
+      height_segments = ([degrees, 180].min / 180 * segments - 1).round.to_i
+      base = height / (height_segments + 1).times.map { |n| Trig.rotate_y(2, last_rotation + n * rotation_amount) }.sum
 
-      more_segments.times do |n|
+      (degrees / 180 * segments - 1).round.to_i.times do |n|
         trap = {
           x: new_x + Trig.rotate_x(base * 2, last_rotation),
           y: new_y + Trig.rotate_y(base * 2, last_rotation),
@@ -37,10 +37,11 @@ module Looper
       end
 
       traps.each do |trap|
+        puts "#{trap}"
         @traps << Trapezoid.new(
           x: x + trap[:x].to_f32,
           y: y - trap[:y].to_f32,
-          angle: angle.to_f32, # 80
+          angle: angle.to_f32,
           rotation: trap[:rotation].to_f32,
           base: base.to_f32,
           color: Game::DEBUG ? Color.random : color
