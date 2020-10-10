@@ -22,7 +22,7 @@ module Looper
       Message.init
 
       @menu = MainMenu.new
-      @course = Course.new
+      @track = Tracks::Crazy.new
       @hud = HeadsUpDisplay.new
 
       @menu.show
@@ -58,37 +58,37 @@ module Looper
     end
 
     def update(frame_time)
-      @course.update(frame_time)
+      @track.update(frame_time)
 
       if @menu.shown?
-        @course.paused = true
+        @track.paused = true
         @menu.update(frame_time)
 
         if @menu.done?
-          @course.difficulty = @menu.difficulty
-          @course.paused = false
+          @track.difficulty = @menu.difficulty
+          @track.paused = false
           @menu.hide
         end
 
         return
       end
 
-      if @course.game_over?
+      if @track.game_over?
         if !Message.shown? && !Message.done?
           Message.show("Game Over!")
         elsif Message.done?
-          @course = Course.new(difficulty: @menu.difficulty)
+          @track = Tracks::Crazy.new(difficulty: @menu.difficulty)
           @menu.show
         end
       end
 
       Message.message.update(frame_time)
 
-      @hud.loops = @course.loops
+      @hud.loops = @track.loops
     end
 
     def draw
-      @course.draw
+      @track.draw
 
       if @menu.shown?
         @menu.draw
@@ -100,7 +100,7 @@ module Looper
     end
 
     def close?
-      @menu.exit? || @course.exit?
+      @menu.exit? || @track.exit?
     end
   end
 end
