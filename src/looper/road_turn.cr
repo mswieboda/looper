@@ -13,9 +13,11 @@ module Looper
     SELECTED_COLOR = Color::Blue
 
     @traps : Array(Trapezoid)
+    @edges : Array(Rectangle)
 
     def initialize(@x, @y, @base = 30, @degrees = 180, @start_degrees = 0, @segments = 10, @color = Color::Gray)
       @traps = [] of Trapezoid
+      @edges = [] of Rectangle
     end
 
     def traps : Array(Trapezoid)
@@ -66,6 +68,15 @@ module Looper
           base: base.to_f32,
           color: Game::DEBUG ? Color.random : color
         )
+
+        @edges << Rectangle.new(
+          x: x + trap[:x].to_f32,
+          y: y - trap[:y].to_f32,
+          rotation: -trap[:rotation].to_f32,
+          width: (base * 2_f32).to_f32,
+          height: 30,
+          color: Color::Red
+        )
       end
 
       @traps
@@ -73,6 +84,7 @@ module Looper
 
     def editable_movement
       @traps.clear
+      @edges.clear
     end
 
     def collision?(obj : Obj)
@@ -85,6 +97,7 @@ module Looper
 
     def draw(view_x, view_y)
       traps.each(&.draw(view_x, view_y))
+      @edges.each(&.draw(view_x, view_y))
 
       if selected?
         Circle.new(
