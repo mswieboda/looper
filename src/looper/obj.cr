@@ -1,5 +1,9 @@
+require "./editable"
+
 module Looper
   abstract class Obj
+    include Editable
+
     property x : Int32 | Float32
     property y : Int32 | Float32
     property width : Int32
@@ -12,11 +16,8 @@ module Looper
     def initialize(@x, @y, @width, @height, @hit_box_color = HIT_BOX_COLOR)
     end
 
-    def update(frame_time)
-    end
-
-    def draw
-      hit_box.draw if Game::DEBUG
+    def draw(view_x, view_y)
+      hit_box.draw(view_x, view_y) if Game::DEBUG
     end
 
     def hit_box
@@ -25,7 +26,7 @@ module Looper
         y: y,
         width: width,
         height: height,
-        color: @hit_box_color,
+        color: selected? ? SELECTED_HIT_BOX_COLOR : @hit_box_color,
         filled: false
       )
     end
@@ -61,7 +62,11 @@ module Looper
         hit_box.y + hit_box.height >= y
     end
 
-    def inside?(x, y)
+    def collision?(v : Vector)
+      collision?(v.x, v.y)
+    end
+
+    def collision?(x, y)
       hit_box.x <= x &&
         hit_box.x + hit_box.width >= x &&
         hit_box.y <= y &&
@@ -75,7 +80,7 @@ module Looper
         Vector.new(x: tri.x3, y: tri.y3)
       ]
 
-      return true if tri_points.all? { |v| inside?(v.x, v.y) }
+      return true if tri_points.all? { |v| collision?(v) }
 
       obj_points = [
         Vector.new(hit_box.x, hit_box.y),

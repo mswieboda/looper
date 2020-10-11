@@ -19,10 +19,10 @@ module Looper
       @accent.update(frame_time)
     end
 
-    def draw
-      super
+    def draw(view_x, view_y)
+      super(view_x, view_y)
 
-      @accent.draw
+      @accent.draw(view_x, view_y)
     end
   end
 end

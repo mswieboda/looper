@@ -34,6 +34,9 @@ module Looper
       # player
       @player = Player.new(difficulty: @difficulty)
 
+      # view
+      @view = View.new
+
       # menu
       @menu = PauseMenu.new
     end
@@ -76,6 +79,14 @@ module Looper
       @game_over_delay += frame_time if game_over_started?
 
       @player.update(frame_time)
+      @view.update(frame_time, @player)
+
+      if Game.edit_mode?
+        @roads.each(&.update(frame_time, @view.view_x, @view.view_y))
+        @road_turns.each(&.update(frame_time, @view.view_x, @view.view_y))
+        @checkpoints.each(&.update(frame_time, @view.view_x, @view.view_y))
+        return
+      end
 
       # road
       if road_collision?
@@ -100,13 +111,16 @@ module Looper
     end
 
     def draw
-      @tiles.each(&.draw)
-      @rivers.each(&.draw)
-      @roads.each(&.draw)
-      @road_turns.each(&.draw)
-      @checkpoints.each(&.draw)
-      @player.draw
-      @menu.draw
+      view_x = @view.view_x
+      view_y = @view.view_y
+
+      @tiles.each(&.draw(view_x, view_y))
+      @rivers.each(&.draw(view_x, view_y))
+      @roads.each(&.draw(view_x, view_y))
+      @road_turns.each(&.draw(view_x, view_y))
+      @checkpoints.each(&.draw(view_x, view_y))
+      @player.draw(view_x, view_y)
+      @menu.draw # TODO: move out of track?
     end
 
     def road_collision?

@@ -20,11 +20,11 @@ module Looper
       end
     end
 
-    def draw
-      super
+    def draw(view_x, view_y)
+      super(view_x, view_y)
 
       if accent = @accent
-        accent.draw
+        accent.draw(view_x, view_y)
       end
     end
   end

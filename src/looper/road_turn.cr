@@ -1,11 +1,31 @@
 module Looper
   class RoadTurn
+    include Editable
+
+    getter x : Int32 | Float32
+    getter y : Int32 | Float32
+    getter base : Int32 | Float32
+    getter degrees : Int32 | Float32
+    getter start_degrees : Int32 | Float32
+    getter segments : Int32
+    getter color : Color
+
+    SELECTED_COLOR = Color::Blue
+
     @traps : Array(Trapezoid)
 
-    def initialize(x, y, base = 30, degrees = 180, start_degrees = 0, segments = 10, color = Color::Gray)
+    def initialize(@x, @y, @base = 30, @degrees = 180, @start_degrees = 0, @segments = 10, @color = Color::Gray)
       @traps = [] of Trapezoid
-      traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
+    end
 
+    def traps : Array(Trapezoid)
+      unless @traps.empty?
+        # memoized
+        # if we need to recalculate then set `@traps.clear`
+        return @traps
+      end
+
+      traps = [] of NamedTuple(x: Int32 | Float32 | Float64, y: Int32 | Float32 | Float64, rotation: Int32 | Float32 | Float64)
       rotation_amount = 180 / segments
       angle = (180 - rotation_amount) / 2
       last_rotation = start_degrees + (90 - angle)
@@ -47,14 +67,34 @@ module Looper
           color: Game::DEBUG ? Color.random : color
         )
       end
+
+      @traps
+    end
+
+    def editable_movement
+      @traps.clear
     end
 
     def collision?(obj : Obj)
-      obj.collision?(@traps)
+      obj.collision?(traps)
     end
 
-    def draw
-      @traps.each(&.draw)
+    def collision?(v : Vector)
+      traps.any? { |trap| trap.tris.any? { |tri| v.collision?(tri) } }
+    end
+
+    def draw(view_x, view_y)
+      traps.each(&.draw(view_x, view_y))
+
+      if selected?
+        Circle.new(
+          center_x: view_x + x,
+          center_y: view_y + y,
+          radius: 10,
+          color: SELECTED_COLOR,
+          filled: false
+        ).draw
+      end
     end
   end
 end

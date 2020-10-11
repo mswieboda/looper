@@ -15,11 +15,6 @@ module Looper
       @points = [] of Circle
     end
 
-    def x=(value : Int32 | Float32)
-      @x = value
-      @tris = nil
-    end
-
     def tris : Array(Triangle)
       if tris = @tris
         # memoized
@@ -94,9 +89,9 @@ module Looper
       obj.collision?(tris)
     end
 
-    def draw
-      tris.each(&.draw)
-      @points.each(&.draw) if Game::DEBUG
+    def draw(view_x, view_y)
+      tris.each(&.draw(view_x, view_y))
+      @points.each(&.draw(view_x, view_y)) if Game::DEBUG
     end
   end
 end

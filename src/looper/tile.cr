@@ -8,15 +8,16 @@ module Looper
     property color : Color
 
     def initialize(@x, @y, @size = SIZE, @color = Color::Gray)
-    end
-
-    def draw
-      Square.new(
+      @square = Square.new(
         x: x,
         y: y,
         size: size,
         color: color
-      ).draw
+      )
+    end
+
+    def draw(view_x, view_y)
+      @square.draw(view_x, view_y)
     end
   end
 end

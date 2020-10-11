@@ -36,15 +36,15 @@ module Looper
       super(frame_time)
     end
 
-    def draw
+    def draw(view_x, view_y)
       @sprite.draw(
-        x: x,
-        y: y,
+        x: view_x + x,
+        y: view_y + y,
         centered: true,
         rotation: rotation
       )
 
-      super
+      super(view_x, view_y)
     end
 
     def hit_box

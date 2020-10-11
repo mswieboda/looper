@@ -5,7 +5,7 @@ module Looper
 
     getter vehicle : Vehicle
 
-    delegate :x, :x=, :y, :y=, :collision?, :collisions?, :input, to: vehicle
+    delegate :x, :x=, :y, :y=, :width, :height, :collision?, :collisions?, :input, to: vehicle
 
     def initialize(x = 0, y = 0, difficulty = "")
       @vehicle = vehicle_class(difficulty).new(
@@ -19,8 +19,8 @@ module Looper
       vehicle.update(frame_time)
     end
 
-    def draw
-      vehicle.draw
+    def draw(view_x, view_y)
+      vehicle.draw(view_x, view_y)
     end
 
     def vehicle_class(difficulty)

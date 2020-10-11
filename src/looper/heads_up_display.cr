@@ -23,6 +23,17 @@ module Looper
 
     def draw
       @loops.draw
+
+      if Game.edit_mode?
+        Text.new(
+          text: "edit mode",
+          x: 0,
+          y: 0,
+          size: 18,
+          spacing: 1,
+          color: TEXT_COLOR
+        ).draw
+      end
     end
   end
 end

@@ -16,9 +16,9 @@ module Looper
       @passed = false
     end
 
-    def draw
-      draw_checker_board if show?
-      super if Game::DEBUG
+    def draw(view_x, view_y)
+      draw_checker_board(view_x, view_y) if show?
+      super(view_x, view_y) if Game::DEBUG
     end
 
     def pass
@@ -30,7 +30,7 @@ module Looper
       pass if passed?
     end
 
-    def draw_checker_board
+    def draw_checker_board(view_x, view_y)
       size = 10
 
       (width / size).to_i.times do |col|
@@ -41,7 +41,7 @@ module Looper
             width: size,
             height: size,
             color: (col + row) % 2 == 0 ? Color::Black : Color::White
-          ).draw
+          ).draw(view_x, view_y)
         end
       end
     end

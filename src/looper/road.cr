@@ -11,14 +11,15 @@ module Looper
       )
     end
 
-    def draw
+    def draw(view_x, view_y)
       Rectangle.new(
         x: x,
         y: y,
         width: width,
         height: height,
         color: color
-      ).draw
+      ).draw(view_x, view_y)
+      super
     end
   end
 end

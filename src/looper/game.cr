@@ -1,7 +1,13 @@
 module Looper
   class Game < Game
-    DEBUG = true
+    DEBUG = false
     TARGET_FPS = 60
+
+    @@edit_mode = false
+
+    def self.edit_mode?
+      @@edit_mode
+    end
 
     def initialize
       super(
@@ -59,6 +65,10 @@ module Looper
 
     def update(frame_time)
       @track.update(frame_time)
+
+      if Game::DEBUG && Key::F3.pressed?
+        @@edit_mode = !@@edit_mode
+      end
 
       if @menu.shown?
         @track.paused = true

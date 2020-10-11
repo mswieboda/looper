@@ -13,8 +13,11 @@ module Looper
     def initialize(@x, @y, @sprite)
     end
 
-    def draw
-      @sprite.draw(x: x, y: y)
+    def draw(view_x, view_y)
+      @sprite.draw(
+        x: view_x + x,
+        y: view_y + y
+      )
     end
   end
 end
