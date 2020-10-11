@@ -25,11 +25,11 @@ module Looper
     end
 
     def self.drift
-      10
+      15
     end
 
     def self.brakes
-      15
+      10
     end
 
     def update(frame_time)

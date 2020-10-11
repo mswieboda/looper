@@ -17,19 +17,19 @@ module Looper
     end
 
     def self.acceleration
-      30
+      25
     end
 
     def self.turning
-      50
+      100
     end
 
     def self.drift
-      5
+      10
     end
 
     def self.brakes
-      30
+      20
     end
 
     def update(frame_time)
