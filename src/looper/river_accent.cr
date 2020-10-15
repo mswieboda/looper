@@ -3,7 +3,7 @@ module Looper
     DELAY = 5_f32
 
     def initialize(x, y)
-      super(x: x, y: y, sprite: Sprite.get(:river_accents))
+      super(x: x, y: y, sprite: Game::Sprite.get(:river_accents))
       @sprite.frame = @sprite.frames - 1
       @sprite.pause
       @delay = rand(DELAY).to_f32

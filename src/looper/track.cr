@@ -81,7 +81,7 @@ module Looper
       @player.update(frame_time)
       @view.update(frame_time, @player)
 
-      if Game.edit_mode?
+      if G.edit_mode?
         @roads.each(&.update(frame_time, @view.view_x, @view.view_y))
         @road_turns.each(&.update(frame_time, @view.view_x, @view.view_y))
         @checkpoints.each(&.update(frame_time, @view.view_x, @view.view_y))
@@ -104,7 +104,7 @@ module Looper
       end
 
       # menu
-      if Keys.pressed?([Key::Escape, Key::Space, Key::Backspace])
+      if Game::Keys.pressed?([Game::Key::Escape, Game::Key::Space, Game::Key::Backspace])
         @paused = true
         @menu.show
       end

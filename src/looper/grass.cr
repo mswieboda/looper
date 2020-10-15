@@ -2,7 +2,7 @@ require "./tile"
 
 module Looper
   class Grass < Tile
-    COLOR = Color.new(red: 43, green: 94, blue: 48)
+    COLOR = Game::Color.new(red: 43, green: 94, blue: 48)
     ACCENT_RATIO = 0.33_f32
 
     @accent : GrassAccent?

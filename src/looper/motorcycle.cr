@@ -2,7 +2,7 @@ require "./vehicle"
 
 module Looper
   class Motorcycle < Vehicle
-    @sprite : Sprite
+    @sprite : Game::Sprite
 
     def initialize(x, y, player = false)
       super(
@@ -13,7 +13,7 @@ module Looper
         player: player,
       )
 
-      @sprite = Sprite.get(:motorcycle)
+      @sprite = Game::Sprite.get(:motorcycle)
     end
 
     def self.acceleration
@@ -50,12 +50,12 @@ module Looper
     def hit_box
       max = [width, height].max / 2_f32
 
-      Rectangle.new(
+      Game::Rectangle.new(
         x: x - max / 2_f32,
         y: y - max / 2_f32,
         width: max,
         height: max,
-        color: Color::Red,
+        color: Game::Color::Red,
         filled: false
       )
     end

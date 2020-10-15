@@ -18,7 +18,7 @@ module Looper
       x * v.x + y * v.y
     end
 
-    def collision?(tri : Triangle)
+    def collision?(tri : Game::Triangle)
       # Barycentric Technique to test if a point is in a triangle
       # https://blackpawn.com/texts/pointinpoly/default.html
 

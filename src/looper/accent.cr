@@ -6,7 +6,7 @@ module Looper
 
     property x : Int32 | Float32
     property y : Int32 | Float32
-    getter sprite : Sprite
+    getter sprite : Game::Sprite
 
     delegate :width, :height, to: sprite
 

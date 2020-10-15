@@ -11,16 +11,16 @@ module Looper
     end
 
     def update(frame_time : Float32, player : Player)
-      if Game.edit_mode?
+      if G.edit_mode?
         movement = MOVE_SPEED * frame_time
 
-        @view_y += movement if Key::W.down?
-        @view_x += movement if Key::A.down?
-        @view_y -= movement if Key::S.down?
-        @view_x -= movement if Key::D.down?
+        @view_y += movement if Game::Key::W.down?
+        @view_x += movement if Game::Key::A.down?
+        @view_y -= movement if Game::Key::S.down?
+        @view_x -= movement if Game::Key::D.down?
       else
-        @view_x = -player.x + Game.screen_width / 2_f32
-        @view_y = -player.y + Game.screen_height / 2_f32
+        @view_x = -player.x + G.screen_width / 2_f32
+        @view_y = -player.y + G.screen_height / 2_f32
       end
     end
   end

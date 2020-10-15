@@ -8,16 +8,16 @@ module Looper
     getter degrees : Int32 | Float32
     getter start_degrees : Int32 | Float32
     getter segments : Int32
-    getter color : Color
+    getter color : Game::Color
 
-    SELECTED_COLOR = Color::Blue
+    SELECTED_COLOR = Game::Color::Blue
 
     @traps : Array(Trapezoid)
-    @edges : Array(Rectangle)
+    @edges : Array(Game::Rectangle)
 
-    def initialize(@x, @y, @base = 30, @degrees = 180, @start_degrees = 0, @segments = 10, @color = Color::Gray)
+    def initialize(@x, @y, @base = 30, @degrees = 180, @start_degrees = 0, @segments = 10, @color = Game::Color::Gray)
       @traps = [] of Trapezoid
-      @edges = [] of Rectangle
+      @edges = [] of Game::Rectangle
     end
 
     def traps : Array(Trapezoid)
@@ -66,16 +66,16 @@ module Looper
           angle: angle.to_f32,
           rotation: trap[:rotation].to_f32,
           base: base.to_f32,
-          color: Game::DEBUG ? Color.random : color
+          color: G::DEBUG ? Game::Color.random : color
         )
 
-        @edges << Rectangle.new(
+        @edges << Game::Rectangle.new(
           x: x + trap[:x].to_f32,
           y: y - trap[:y].to_f32,
           rotation: -trap[:rotation].to_f32,
           width: (base * 2_f32).to_f32,
           height: 30,
-          color: Color::Red
+          color: Game::Color::Red
         )
       end
 
@@ -100,7 +100,7 @@ module Looper
       @edges.each(&.draw(view_x, view_y))
 
       if selected?
-        Circle.new(
+        Game::Circle.new(
           center_x: view_x + x,
           center_y: view_y + y,
           radius: 10,

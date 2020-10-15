@@ -8,8 +8,8 @@ module Looper
 
     delegate :text, to: @text
 
-    def initialize(x = 0, y = 0, text = "", color = Color::Lime, @focused = false, @padding = PADDING)
-      @text = Text.new(
+    def initialize(x = 0, y = 0, text = "", color = Game::Color::Lime, @focused = false, @padding = PADDING)
+      @text = Game::Text.new(
         text: text,
         x: x + @padding,
         y: y + @padding,
@@ -59,7 +59,7 @@ module Looper
     def draw_focused
       return unless focused?
 
-      Rectangle.new(
+      Game::Rectangle.new(
         x: x,
         y: y,
         width: width,

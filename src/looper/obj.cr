@@ -9,19 +9,19 @@ module Looper
     property width : Int32
     property height : Int32
 
-    HIT_BOX_COLOR = Color::Red
+    HIT_BOX_COLOR = Game::Color::Red
 
-    @hit_box_color : Color
+    @hit_box_color : Game::Color
 
     def initialize(@x, @y, @width, @height, @hit_box_color = HIT_BOX_COLOR)
     end
 
     def draw(view_x, view_y)
-      hit_box.draw(view_x, view_y) if Game::DEBUG
+      hit_box.draw(view_x, view_y) if G::DEBUG
     end
 
     def hit_box
-      Rectangle.new(
+      Game::Rectangle.new(
         x: x,
         y: y,
         width: width,
@@ -35,11 +35,11 @@ module Looper
       objs.any? { |obj| collision?(obj) }
     end
 
-    def collision?(rects : Array(Rectangle))
+    def collision?(rects : Array(Game::Rectangle))
       rects.any? { |rect| collision?(rect) }
     end
 
-    def collision?(tris : Array(Triangle))
+    def collision?(tris : Array(Game::Triangle))
       tris.any? { |tri| collision?(tri) }
     end
 
@@ -51,7 +51,7 @@ module Looper
       collision?(x: obj.hit_box.x, y: obj.hit_box.y, width: obj.hit_box.width, height: obj.hit_box.height)
     end
 
-    def collision?(rect : Rectangle)
+    def collision?(rect : Game::Rectangle)
       collision?(x: rect.x, y: rect.y, width: rect.width, height: rect.height)
     end
 
@@ -73,7 +73,7 @@ module Looper
         hit_box.y + hit_box.height >= y
     end
 
-    def collision?(tri : Triangle)
+    def collision?(tri : Game::Triangle)
       tri_points = [
         Vector.new(x: tri.x1, y: tri.y1),
         Vector.new(x: tri.x2, y: tri.y2),

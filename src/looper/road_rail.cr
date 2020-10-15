@@ -4,9 +4,9 @@ module Looper
 
     property v1 : Vector
     property v2 : Vector
-    property color : Color
+    property color : Game::Color
 
-    def initialize(@v1, @v2, @thickness = THICKNESS, @color = Color::Red)
+    def initialize(@v1, @v2, @thickness = THICKNESS, @color = Game::Color::Red)
     end
 
     def draw

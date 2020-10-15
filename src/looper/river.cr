@@ -2,7 +2,7 @@ require "./tile"
 
 module Looper
   class River < Tile
-    COLOR = Color::DarkBlue
+    COLOR = Game::Color::DarkBlue
 
     @accent : RiverAccent
 

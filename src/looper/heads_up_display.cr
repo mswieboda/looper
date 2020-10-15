@@ -1,10 +1,10 @@
 module Looper
   class HeadsUpDisplay
     PADDING = 15
-    TEXT_COLOR = Color::White
+    TEXT_COLOR = Game::Color::White
 
     def initialize
-      @loops = Text.new(
+      @loops = Game::Text.new(
         text: "loops: 0",
         x: PADDING,
         y: PADDING,
@@ -24,8 +24,8 @@ module Looper
     def draw
       @loops.draw
 
-      if Game.edit_mode?
-        Text.new(
+      if G.edit_mode?
+        Game::Text.new(
           text: "edit mode",
           x: 0,
           y: 0,

@@ -4,7 +4,7 @@ require "./looper/**"
 
 module Looper
   def self.run
-    Game.new.run
+    G.new.run
   end
 end
 

@@ -3,7 +3,7 @@ module Looper
     getter? show
     getter? passed
 
-    PASSED_HIT_BOX_COLOR = Color::Lime
+    PASSED_HIT_BOX_COLOR = Game::Color::Lime
 
     def initialize(x, y, width, height, @show = false)
       super(
@@ -18,7 +18,7 @@ module Looper
 
     def draw(view_x, view_y)
       draw_checker_board(view_x, view_y) if show?
-      super(view_x, view_y) if Game::DEBUG
+      super(view_x, view_y) if G::DEBUG
     end
 
     def pass
@@ -35,12 +35,12 @@ module Looper
 
       (width / size).to_i.times do |col|
         (height / size).to_i.times do |row|
-          Rectangle.new(
+          Game::Rectangle.new(
             x: x + size * col,
             y: y + size * row,
             width: size,
             height: size,
-            color: (col + row) % 2 == 0 ? Color::Black : Color::White
+            color: (col + row) % 2 == 0 ? Game::Color::Black : Game::Color::White
           ).draw(view_x, view_y)
         end
       end

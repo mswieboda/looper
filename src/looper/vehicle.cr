@@ -91,27 +91,27 @@ module Looper
     def input(frame_time)
       return unless player?
 
-      if Keys.down?([Key::Up, Key::W])
+      if Game::Keys.down?([Game::Key::Up, Game::Key::W])
         accelerate(frame_time)
       end
 
-      if Keys.down?([Key::Left, Key::A])
+      if Game::Keys.down?([Game::Key::Left, Game::Key::A])
         turn_left(frame_time)
       end
 
-      if Keys.down?([Key::Right, Key::D])
+      if Game::Keys.down?([Game::Key::Right, Game::Key::D])
         turn_right(frame_time)
       end
 
-      if Keys.pressed?([Key::LShift, Key::RShift])
+      if Game::Keys.pressed?([Game::Key::LShift, Game::Key::RShift])
         @drifting = true
-      elsif Keys.released?([Key::LShift, Key::RShift])
+      elsif Game::Keys.released?([Game::Key::LShift, Game::Key::RShift])
         @drifting = false
       end
 
-      if Keys.pressed?([Key::Down, Key::S])
+      if Game::Keys.pressed?([Game::Key::Down, Game::Key::S])
         @braking = true
-      elsif Keys.released?([Key::Down, Key::S])
+      elsif Game::Keys.released?([Game::Key::Down, Game::Key::S])
         @braking = false
       end
     end

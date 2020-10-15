@@ -5,10 +5,10 @@ module Looper
     property x : Int32 | Float32
     property y : Int32 | Float32
     property size : Int32
-    property color : Color
+    property color : Game::Color
 
-    def initialize(@x, @y, @size = SIZE, @color = Color::Gray)
-      @square = Square.new(
+    def initialize(@x, @y, @size = SIZE, @color = Game::Color::Gray)
+      @square = Game::Square.new(
         x: x,
         y: y,
         size: size,

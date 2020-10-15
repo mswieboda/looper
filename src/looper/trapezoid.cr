@@ -7,22 +7,22 @@ module Looper
     getter rotation : Int32 | Float32
     getter flip : Bool
 
-    @tris : Array(Triangle)?
-    @points : Array(Circle)
-    @color : Color
+    @tris : Array(Game::Triangle)?
+    @points : Array(Game::Circle)
+    @color : Game::Color
 
-    def initialize(@x, @y, @angle, @base, @rotation = 0, @flip = false, @color = Color::Red)
-      @points = [] of Circle
+    def initialize(@x, @y, @angle, @base, @rotation = 0, @flip = false, @color = Game::Color::Red)
+      @points = [] of Game::Circle
     end
 
-    def tris : Array(Triangle)
+    def tris : Array(Game::Triangle)
       if tris = @tris
         # memoized
         # if we need to recalculate then set `@tris = nil`
         return tris
       end
 
-      tris = [] of Triangle
+      tris = [] of Game::Triangle
       a = base / 2 # a, b from a, b, c edges in right angle
       b = a * Math.tan(Trig.to_radians(@angle))
       interior_angle = Trig.to_degrees(Math.atan(b / (a + @base)))
@@ -63,7 +63,7 @@ module Looper
 
       # create triangles
       triangles.each do |t|
-        tris << Triangle.new(
+        tris << Game::Triangle.new(
           x1: t[0][:x], y1: t[0][:y],
           x2: t[1][:x], y2: t[1][:y],
           x3: t[2][:x], y3: t[2][:y],
@@ -72,11 +72,11 @@ module Looper
       end
 
       # create circle points
-      colors = [Color::Red, Color::Green, Color::Blue]
-      @points = [] of Circle
+      colors = [Game::Color::Red, Game::Color::Green, Game::Color::Blue]
+      @points = [] of Game::Circle
       triangles.each do |points|
         points.each_with_index do |p, index|
-          @points << Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: colors[index])
+          @points << Game::Circle.new(center_x: p[:x], center_y: p[:y], size: 5, filled: false, color: colors[index])
         end
       end
 
@@ -91,7 +91,7 @@ module Looper
 
     def draw(view_x, view_y)
       tris.each(&.draw(view_x, view_y))
-      @points.each(&.draw(view_x, view_y)) if Game::DEBUG
+      @points.each(&.draw(view_x, view_y)) if G::DEBUG
     end
   end
 end

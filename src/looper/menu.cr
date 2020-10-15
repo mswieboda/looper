@@ -25,8 +25,8 @@ module Looper
     end
 
     def arrange_items
-      x = Game.screen_width / 2_f32
-      y = Game.screen_height / 2_f32 - items_height / 2_f32
+      x = G.screen_width / 2_f32
+      y = G.screen_height / 2_f32 - items_height / 2_f32
 
       @items.each do |item|
         item.x = x - item.width / 2_f32
@@ -39,13 +39,13 @@ module Looper
     def update(frame_time)
       return unless shown?
 
-      if Keys.pressed?([Key::Down, Key::S])
+      if Game::Keys.pressed?([Game::Key::Down, Game::Key::S])
         focus_next
-      elsif Keys.pressed?([Key::Up, Key::W])
+      elsif Game::Keys.pressed?([Game::Key::Up, Game::Key::W])
         focus_last
-      elsif Keys.pressed?([Key::Enter, Key::Space, Key::LShift, Key::RShift])
+      elsif Game::Keys.pressed?([Game::Key::Enter, Game::Key::Space, Game::Key::LShift, Game::Key::RShift])
         select_item
-      elsif Keys.pressed?([Key::Escape, Key::Backspace])
+      elsif Game::Keys.pressed?([Game::Key::Escape, Game::Key::Backspace])
         back
       end
     end
@@ -61,33 +61,33 @@ module Looper
     def draw_background
       padding = 50
 
-      x = Game.screen_width / 2_f32
-      y = Game.screen_height / 2_f32 - items_height / 2_f32
+      x = G.screen_width / 2_f32
+      y = G.screen_height / 2_f32 - items_height / 2_f32
 
-      Rectangle.new(
+      Game::Rectangle.new(
         x: x - items_width / 2_f32 - padding,
         y: y - padding,
         width: items_width + padding * 2,
         height: items_height + padding * 2,
-        color: Color::Black,
+        color: Game::Color::Black,
       ).draw
     end
 
     def draw_header(text : String)
       padding = 25
 
-      x = Game.screen_width / 2_f32
+      x = G.screen_width / 2_f32
       y = padding
 
       item = MenuItem.new(x: x, y: y, text: text, padding: padding)
       item.x = x - item.width / 2_f32
 
-      Rectangle.new(
+      Game::Rectangle.new(
         x: item.x,
         y: item.y,
         width: item.width,
         height: item.height,
-        color: Color::Black,
+        color: Game::Color::Black,
       ).draw
 
       item.draw

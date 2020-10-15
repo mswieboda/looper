@@ -1,8 +1,8 @@
 module Looper
   class Road < Obj
-    property color : Color
+    property color : Game::Color
 
-    def initialize(x, y, width, height, @color = Color::Gray)
+    def initialize(x, y, width, height, @color = Game::Color::Gray)
       super(
         x: x,
         y: y,
@@ -12,7 +12,7 @@ module Looper
     end
 
     def draw(view_x, view_y)
-      Rectangle.new(
+      Game::Rectangle.new(
         x: x,
         y: y,
         width: width,

@@ -4,8 +4,8 @@ module Looper::Tracks
     def initialize(difficulty = "")
       super(difficulty: difficulty)
 
-      tiles_x = (Game.screen_width / Tile::SIZE).to_i
-      tiles_y = (Game.screen_height / Tile::SIZE).to_i
+      tiles_x = (G.screen_width / Tile::SIZE).to_i
+      tiles_y = (G.screen_height / Tile::SIZE).to_i
 
       # rivers
       rivers_y = 300

@@ -1,5 +1,5 @@
 module Looper
-  class Game < Game
+  class G < Game::Game
     DEBUG = true
     TARGET_FPS = 60
 
@@ -35,7 +35,7 @@ module Looper
     end
 
     def load_sprites
-      Sprite.load({
+      Game::Sprite.load({
         :car => {
           filename: "../assets/car.png",
           width: 56,
@@ -66,7 +66,7 @@ module Looper
     def update(frame_time)
       @track.update(frame_time)
 
-      if Game::DEBUG && Key::F3.pressed?
+      if DEBUG && Game::Key::F3.pressed?
         @@edit_mode = !@@edit_mode
       end
 
