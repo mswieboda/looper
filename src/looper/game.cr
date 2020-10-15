@@ -28,7 +28,7 @@ module Looper
       Message.init
 
       @menu = MainMenu.new
-      @track = Tracks::Crazy.new
+      @track = Tracks::Loop.new
       @hud = HeadsUpDisplay.new
 
       @menu.show
@@ -87,14 +87,16 @@ module Looper
         if !Message.shown? && !Message.done?
           Message.show("Game Over!")
         elsif Message.done?
-          @track = Tracks::Crazy.new(difficulty: @menu.difficulty)
+          @track = Tracks::Loop.new(difficulty: @menu.difficulty)
           @menu.show
         end
       end
 
       Message.message.update(frame_time)
 
-      @hud.loops = @track.loops
+      @hud.laps = @track.laps
+      @hud.lap_time = @track.lap_time.get
+      @hud.lap_times = @track.lap_times
     end
 
     def draw

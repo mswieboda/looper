@@ -2,9 +2,11 @@ module Looper
   abstract class Track
     GAME_OVER_DELAY = 0.3
 
-    getter loops : UInt16
     getter? game_over_started
     property? paused
+    getter laps : UInt16
+    getter lap_time : Game::Time
+    getter lap_times : Array(Float64)
 
     delegate :exit?, to: @menu
 
@@ -22,8 +24,10 @@ module Looper
     def initialize(@difficulty = "")
       @game_over_started = false
       @game_over_delay = 0_f32
-      @loops = 0_u8
       @paused = true
+      @laps = 0_u8
+      @lap_time = Game::Time.new
+      @lap_times = [] of Float64
 
       @rivers = [] of River
       @tiles = [] of Tile
@@ -44,7 +48,9 @@ module Looper
     def restart
       @game_over_started = false
       @game_over_delay = 0_f32
-      @loops = 0_u8
+      @laps = 0_u8
+      lap_time = Game::Time.new
+      lap_times.clear
 
       @player = Player.new(x: 250, y: 100, difficulty: @difficulty)
     end
@@ -96,8 +102,15 @@ module Looper
       end
 
       # checkpoints
+      if @player.collision?(@checkpoints.first) && @checkpoints.none?(&.passed?)
+        lap_time.start
+      end
+
       if @checkpoints.all?(&.passed?) && @player.collision?(@checkpoints.first)
-        @loops += 1
+        lap_times << lap_time.get
+        lap_time.start
+
+        @laps += 1
         @checkpoints.each(&.reset)
       else
         @checkpoints.reject(&.passed?).select { |c| @player.collision?(c) }.each(&.pass)
