@@ -16,16 +16,24 @@ module Looper
       @sprite = Game::Sprite.get(:car)
     end
 
+    def self.initial_acceleration
+      10
+    end
+
     def self.acceleration
-      15
+      17
     end
 
     def self.turning
-      150
+      130
     end
 
-    def self.drift
-      15
+    def self.drift_turning
+      30
+    end
+
+    def self.drift_rotation_increase
+      3
     end
 
     def self.brakes

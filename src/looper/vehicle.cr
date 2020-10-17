@@ -29,29 +29,40 @@ module Looper
       @reverse = false
     end
 
+    def self.initial_acceleration
+      5
+    end
+
     def self.acceleration
       15
     end
 
-    def self.max_acceleration
+    def self.max_speed
       50
     end
 
     def self.drag
-      5
+      10
     end
 
     def self.turning
-      100
+      130
     end
 
-    def self.drift
-      10
+    def self.drift_turning
+      15
+    end
+
+    def self.drift_rotation_increase
+      5
     end
 
     def accelerate(frame_time)
       return if braking? && !reverse?
-      @acceleration += self.class.acceleration * frame_time * (reverse? ? -1 : 1)
+
+      @acceleration += self.class.acceleration * frame_time
+
+      @speed += @acceleration * frame_time * (reverse? ? -1 : 1)
     end
 
     def turn_left(frame_time)
@@ -63,9 +74,9 @@ module Looper
     end
 
     def turn(time_and_direction)
-      return unless @acceleration > 0
+      return unless @speed > 0
 
-      @rotation += self.class.turning * time_and_direction
+      @rotation += (self.class.turning + (drifting? ? self.class.drift_turning : 0)) * time_and_direction
     end
 
     def update(frame_time)
@@ -73,19 +84,19 @@ module Looper
     end
 
     def movement(frame_time)
-      return unless @acceleration > 0
+      return unless @speed > 0
 
-      # last rotation used for drifting
-      @last_rotation += (rotation - @last_rotation) * self.class.drift * frame_time
+      # extra rotation used for drifting
+      @last_rotation += (rotation - @last_rotation) * self.class.drift_rotation_increase * frame_time
 
       angle = drifting? ? @last_rotation : rotation
 
-      @x += Trig.rotate_x(@acceleration, angle).to_f32
-      @y += Trig.rotate_y(@acceleration, angle).to_f32
+      @x += Trig.rotate_x(@speed, angle).to_f32
+      @y += Trig.rotate_y(@speed, angle).to_f32
 
-      # reduce acceleration each frame
-      @acceleration -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
-      @acceleration = @acceleration.clamp(0, self.class.max_acceleration)
+      # reduce speed each frame
+      @speed -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
+      @speed = @speed.clamp(0, self.class.max_speed)
     end
 
     def input(frame_time)
@@ -93,6 +104,8 @@ module Looper
 
       if Game::Keys.down?([Game::Key::Up, Game::Key::W])
         accelerate(frame_time)
+      else
+        @acceleration = self.class.initial_acceleration
       end
 
       if Game::Keys.down?([Game::Key::Left, Game::Key::A])

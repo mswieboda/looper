@@ -24,8 +24,12 @@ module Looper
       100
     end
 
-    def self.drift
-      10
+    def self.drift_turning
+      30
+    end
+
+    def self.drift_rotation_increase
+      5
     end
 
     def self.brakes
