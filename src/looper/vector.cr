@@ -3,6 +3,10 @@ module Looper
     property x : Int32 | Float32
     property y : Int32 | Float32
 
+    def self.zero
+      Vector.new
+    end
+
     def initialize(@x = 0, @y = 0)
     end
 
@@ -16,6 +20,22 @@ module Looper
 
     def dot(v : Vector)
       x * v.x + y * v.y
+    end
+
+    def ==(other : Vector)
+      puts ">>> #== other #{other}"
+      x == other.x && y == other.y
+    end
+
+    def to_s(io : IO)
+      io << "#<" << self.class.name << ":0x"
+      object_id.to_s(io, 16)
+      io << ":(x: #{x}, y: #{y})>"
+    end
+
+    def zero?
+      puts ">>> zero?"
+      self == self.class.zero
     end
 
     def collision?(tri : Game::Triangle)

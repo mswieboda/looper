@@ -7,8 +7,9 @@ module Looper
     alias SkidInfo = NamedTuple(rotation: Int32 | Float32 | Float64, radius: Int32 | Float32 | Float64)
 
     # skids
-    @skids : Array(NamedTuple(back_left: Game::Pixel, back_right: Game::Pixel))
+    @skids : Array(Skid)
     @skid_info : NamedTuple(back_left: SkidInfo, back_right: SkidInfo)
+    @last_skid : NamedTuple(back_left: Vector, back_right: Vector)?
 
     def initialize(x, y, player = false)
       super(
@@ -20,7 +21,7 @@ module Looper
       )
 
       @sprite = Game::Sprite.get(:car)
-      @skids = [] of NamedTuple(back_left: Game::Pixel, back_right: Game::Pixel)
+      @skids = [] of Skid
 
       # set up skid tire locations
       adjacent = -width / 2
@@ -36,6 +37,11 @@ module Looper
           rotation: Trig.to_degrees(Math.atan(opposite / adjacent)),
           radius: -radius
         }
+      }
+
+      @last_skid = {
+        back_left: Vector.new,
+        back_right: Vector.new
       }
     end
 
@@ -67,16 +73,36 @@ module Looper
       super(frame_time)
 
       if moving? && drifting?
-        @skids << {
-          back_left: Game::Pixel.new(
+        skid = {
+          back_left: Vector.new(
             x: x + Trig.rotate_x(@skid_info[:back_left][:radius], rotation + @skid_info[:back_left][:rotation]).to_f32,
             y: y + Trig.rotate_y(@skid_info[:back_left][:radius], rotation + @skid_info[:back_left][:rotation]).to_f32
           ),
-          back_right: Game::Pixel.new(
+          back_right: Vector.new(
             x: x + Trig.rotate_x(@skid_info[:back_right][:radius], rotation + @skid_info[:back_right][:rotation]).to_f32,
             y: y + Trig.rotate_y(@skid_info[:back_right][:radius], rotation + @skid_info[:back_right][:rotation]).to_f32
           )
         }
+
+        if last_skid = @last_skid
+          # create skids
+          @skids <<  Skid.new(
+            end_x: skid[:back_left].x,
+            end_y: skid[:back_left].y,
+            start_x: last_skid[:back_left].x,
+            start_y: last_skid[:back_left].y
+          )
+          @skids <<  Skid.new(
+            end_x: skid[:back_right].x,
+            end_y: skid[:back_right].y,
+            start_x: last_skid[:back_right].x,
+            start_y: last_skid[:back_right].y
+          )
+        end
+
+        @last_skid = skid
+      else
+        @last_skid = nil
       end
     end
 
@@ -90,10 +116,7 @@ module Looper
 
       super(view_x, view_y)
 
-      @skids.each do |skid|
-        skid[:back_left].draw(view_x, view_y)
-        skid[:back_right].draw(view_x, view_y)
-      end
+      @skids.each(&.draw(view_x, view_y))
     end
 
     def hit_box
