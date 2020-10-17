@@ -57,6 +57,10 @@ module Looper
       5
     end
 
+    def moving?
+      @speed > 0
+    end
+
     def accelerate(frame_time)
       return if braking? && !reverse?
 
@@ -74,7 +78,7 @@ module Looper
     end
 
     def turn(time_and_direction)
-      return unless @speed > 0
+      return unless moving?
 
       @rotation += (self.class.turning + (drifting? ? self.class.drift_turning : 0)) * time_and_direction
     end
@@ -84,7 +88,7 @@ module Looper
     end
 
     def movement(frame_time)
-      return unless @speed > 0
+      return unless moving?
 
       # extra rotation used for drifting
       @last_rotation += (rotation - @last_rotation) * self.class.drift_rotation_increase * frame_time
