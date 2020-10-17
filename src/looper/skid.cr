@@ -2,6 +2,10 @@ require "./vehicle"
 
 module Looper
   class Skid < Game::Line
+    getter? expired
+
+    TIME_TO_EXPIRE = 1
+
     def initialize(end_x, end_y, start_x = 0, start_y = 0, color = nil)
       super(
         end_x: end_x,
@@ -10,9 +14,17 @@ module Looper
         start_y: start_y,
         color: color
       )
+
+      @expired = false
+      @expiration = 0_f32
     end
 
     def update(frame_time)
+      return if expired?
+
+      @expiration += frame_time
+
+      @expired = true if @expiration >= TIME_TO_EXPIRE
     end
 
     def draw(view_x, view_y)

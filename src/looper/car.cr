@@ -72,6 +72,9 @@ module Looper
     def update(frame_time)
       super(frame_time)
 
+      @skids.each(&.update(frame_time))
+      @skids.reject!(&.expired?)
+
       if moving? && drifting?
         skid = {
           back_left: Vector.new(
@@ -86,13 +89,13 @@ module Looper
 
         if last_skid = @last_skid
           # create skids
-          @skids <<  Skid.new(
+          @skids << Skid.new(
             end_x: skid[:back_left].x,
             end_y: skid[:back_left].y,
             start_x: last_skid[:back_left].x,
             start_y: last_skid[:back_left].y
           )
-          @skids <<  Skid.new(
+          @skids << Skid.new(
             end_x: skid[:back_right].x,
             end_y: skid[:back_right].y,
             start_x: last_skid[:back_right].x,
