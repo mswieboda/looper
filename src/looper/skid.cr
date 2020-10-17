@@ -1,18 +1,22 @@
 require "./vehicle"
 
 module Looper
-  class Skid < Game::Line
+  class Skid < Line
     getter? expired
 
-    TIME_TO_EXPIRE = 1
+    DEFAULT_THICKNESS = 10
+    TIME_TO_EXPIRE = 15
+    DEFAULT_COLOR_ALPHA = 0.5
+    DEFAULT_COLOR = Game::Color::Black.alpha(DEFAULT_COLOR_ALPHA)
 
-    def initialize(end_x, end_y, start_x = 0, start_y = 0, color = nil)
+    def initialize(end_x, end_y, start_x = 0, start_y = 0, color = DEFAULT_COLOR, thickness = DEFAULT_THICKNESS)
       super(
         end_x: end_x,
         end_y: end_y,
         start_x: start_x,
         start_y: start_y,
-        color: color
+        color: color,
+        thickness: thickness
       )
 
       @expired = false
@@ -24,21 +28,22 @@ module Looper
 
       @expiration += frame_time
 
-      @expired = true if @expiration >= TIME_TO_EXPIRE
+      if @expiration >= TIME_TO_EXPIRE
+        @expired = true
+        @expiration = TIME_TO_EXPIRE
+      end
+
+      rectangle.color = rectangle.color.alpha(color_alpha)
+    end
+
+    def color_alpha
+      (DEFAULT_COLOR_ALPHA - @expiration / TIME_TO_EXPIRE).clamp(0.0, 1.0)
     end
 
     def draw(view_x, view_y)
-      LibRay.draw_line_v(
-        start_pos: LibRay::Vector2.new(
-          x: view_x + start_x,
-          y: view_y + start_y
-        ),
-        end_pos: LibRay::Vector2.new(
-          x: view_x + end_x,
-          y: view_y + end_y
-        ),
-        color: color.to_struct
-      )
+      super
+
+      draw_line(view_x, view_y, Game::Color::Gray.alpha(color_alpha))
     end
   end
 end

@@ -1,6 +1,6 @@
 module Looper
   class G < Game::Game
-    DEBUG = true
+    DEBUG = false
     TARGET_FPS = 60
 
     @@edit_mode = false

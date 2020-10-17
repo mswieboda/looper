@@ -97,7 +97,7 @@ module Looper
 
     def draw(view_x, view_y)
       traps.each(&.draw(view_x, view_y))
-      @edges.each(&.draw(view_x, view_y))
+      @edges.each(&.draw(view_x, view_y)) if G::DEBUG # TODO: wip on edges
 
       if selected?
         Game::Circle.new(
