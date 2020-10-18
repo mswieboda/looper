@@ -91,7 +91,7 @@ module Looper
       obj.collision?(traps)
     end
 
-    def collision?(v : Vector)
+    def collision?(v : Game::Vector)
       traps.any? { |trap| trap.tris.any? { |tri| v.collision?(tri) } }
     end
 

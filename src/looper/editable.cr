@@ -9,7 +9,7 @@ module Looper
       return unless G.edit_mode?
 
       if Game::Mouse.pressed?(Game::MouseButton::Left)
-        if collision?(Vector.new(x: Game::Mouse.x - view_x, y: Game::Mouse.y - view_y))
+        if collision?(Game::Vector.new(x: Game::Mouse.x - view_x, y: Game::Mouse.y - view_y))
           @selected = true
         else
           @selected = false

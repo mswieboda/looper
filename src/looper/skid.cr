@@ -1,7 +1,7 @@
 require "./vehicle"
 
 module Looper
-  class Skid < Line
+  class Skid < Game::Line
     getter? expired
 
     DEFAULT_THICKNESS = 10

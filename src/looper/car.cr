@@ -11,7 +11,7 @@ module Looper
     # skids
     @skids : Array(Skid)
     @skid_info : NamedTuple(back_left: SkidInfo, back_right: SkidInfo)
-    @last_skid : NamedTuple(back_left: Vector, back_right: Vector)?
+    @last_skid : NamedTuple(back_left: Game::Vector, back_right: Game::Vector)?
 
     def initialize(x, y, player = false)
       super(
@@ -42,8 +42,8 @@ module Looper
       }
 
       @last_skid = {
-        back_left: Vector.new,
-        back_right: Vector.new
+        back_left: Game::Vector.new,
+        back_right: Game::Vector.new
       }
     end
 
@@ -91,11 +91,11 @@ module Looper
         back_right_mid_tire_y = back_right_y - mid_tire * Math.cos(Trig.to_radians(rotation))
 
         skid = {
-          back_left: Vector.new(
+          back_left: Game::Vector.new(
             x: back_left_mid_tire_x.to_f32,
             y: back_left_mid_tire_y.to_f32
           ),
-          back_right: Vector.new(
+          back_right: Game::Vector.new(
             x: back_right_mid_tire_x.to_f32,
             y: back_right_mid_tire_y.to_f32
           )

@@ -2,8 +2,8 @@ module Looper
   class RoadRail
     THICKNESS = 5
 
-    property v1 : Vector
-    property v2 : Vector
+    property v1 : Game::Vector
+    property v2 : Game::Vector
     property color : Game::Color
 
     def initialize(@v1, @v2, @thickness = THICKNESS, @color = Game::Color::Red)

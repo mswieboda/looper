@@ -62,7 +62,7 @@ module Looper
         hit_box.y + hit_box.height >= y
     end
 
-    def collision?(v : Vector)
+    def collision?(v : Game::Vector)
       collision?(v.x, v.y)
     end
 
@@ -75,25 +75,25 @@ module Looper
 
     def collision?(tri : Game::Triangle)
       tri_points = [
-        Vector.new(x: tri.x1, y: tri.y1),
-        Vector.new(x: tri.x2, y: tri.y2),
-        Vector.new(x: tri.x3, y: tri.y3)
+        Game::Vector.new(x: tri.x1, y: tri.y1),
+        Game::Vector.new(x: tri.x2, y: tri.y2),
+        Game::Vector.new(x: tri.x3, y: tri.y3)
       ]
 
       return true if tri_points.all? { |v| collision?(v) }
 
       obj_points = [
-        Vector.new(hit_box.x, hit_box.y),
-        Vector.new(hit_box.x + hit_box.width, hit_box.y),
-        Vector.new(hit_box.x + hit_box.width, hit_box.y + hit_box.height),
-        Vector.new(hit_box.x, hit_box.y + hit_box.height)
+        Game::Vector.new(hit_box.x, hit_box.y),
+        Game::Vector.new(hit_box.x + hit_box.width, hit_box.y),
+        Game::Vector.new(hit_box.x + hit_box.width, hit_box.y + hit_box.height),
+        Game::Vector.new(hit_box.x, hit_box.y + hit_box.height)
       ]
 
       # check if any obj points are inside triangle
       return true if obj_points.any?(&.collision?(tri))
 
-      obj_lines = [] of Array(Vector)
-      tri_lines = [] of Array(Vector)
+      obj_lines = [] of Array(Game::Vector)
+      tri_lines = [] of Array(Game::Vector)
 
       obj_lines << [obj_points[0], obj_points[1]]
       obj_lines << [obj_points[1], obj_points[2]]
@@ -107,7 +107,7 @@ module Looper
       # check if any obj lines intersect triangle lines
       obj_lines.each do |obj_line|
         tri_lines.each do |tri_line|
-          return true if Vector.collision?(a1: obj_line[0], a2: obj_line[1], b1: tri_line[0], b2: tri_line[1])
+          return true if Game::Vector.collision?(a1: obj_line[0], a2: obj_line[1], b1: tri_line[0], b2: tri_line[1])
         end
       end
 
