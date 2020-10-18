@@ -55,6 +55,10 @@ module Looper
       17
     end
 
+    def self.max_speed
+      17
+    end
+
     def self.turning
       130
     end

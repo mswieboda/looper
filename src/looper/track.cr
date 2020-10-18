@@ -9,8 +9,11 @@ module Looper
     getter lap_times : Array(Float64)
 
     delegate :exit?, to: @menu
+    delegate :speed, to: @player
 
     @game_over_delay : Float32
+
+    @player : Player
 
     @tiles : Array(Tile)
     @rivers : Array(River)

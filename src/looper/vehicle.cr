@@ -3,13 +3,14 @@ require "./obj"
 module Looper
   abstract class Vehicle < Obj
     getter rotation : Int32 | Float32
+    getter speed : Int32 | Float32
+    getter acceleration : Int32 | Float32
+
     getter? drifting
     getter? braking
     getter? reverse
     getter? player
 
-    @speed : Int32 | Float32
-    @acceleration : Int32 | Float32
     @last_rotation : Int32 | Float32
 
     def initialize(x, y, width, height, @player = false)
@@ -42,7 +43,7 @@ module Looper
     end
 
     def self.drag
-      10
+      5
     end
 
     def self.turning

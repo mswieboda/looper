@@ -97,6 +97,7 @@ module Looper
       @hud.laps = @track.laps
       @hud.lap_time = @track.lap_time.get
       @hud.lap_times = @track.lap_times
+      @hud.speed = @track.speed
     end
 
     def draw
