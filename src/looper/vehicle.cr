@@ -38,12 +38,16 @@ module Looper
       15
     end
 
+    def self.max_acceleration
+      50
+    end
+
     def self.max_speed
       50
     end
 
     def self.drag
-      5
+      3
     end
 
     def self.turning
@@ -51,11 +55,19 @@ module Looper
     end
 
     def self.drift_turning
-      15
+      30
     end
 
     def self.drift_rotation_increase
+      30
+    end
+
+    def self.drift_braking
       5
+    end
+
+    def self.brakes
+      15
     end
 
     def moving?
@@ -65,7 +77,11 @@ module Looper
     def accelerate(frame_time)
       return if braking? && !reverse?
 
-      @acceleration += self.class.acceleration * frame_time
+      if drifting?
+        @acceleration = self.class.initial_acceleration
+      else
+        @acceleration += self.class.acceleration * frame_time
+      end
 
       @speed += @acceleration * frame_time * (reverse? ? -1 : 1)
     end
@@ -100,7 +116,9 @@ module Looper
       @y += Trig.rotate_y(@speed, angle).to_f32
 
       # reduce speed each frame
-      @speed -= ((self.class.drag + (braking? ? self.class.brakes : 1)) * frame_time)
+      @speed -= self.class.drag * frame_time
+      @speed -= self.class.brakes * frame_time if braking?
+      @speed -= self.class.drift_braking * frame_time if drifting?
       @speed = @speed.clamp(0, self.class.max_speed)
     end
 
@@ -113,13 +131,8 @@ module Looper
         @acceleration = self.class.initial_acceleration
       end
 
-      if Game::Keys.down?([Game::Key::Left, Game::Key::A])
-        turn_left(frame_time)
-      end
-
-      if Game::Keys.down?([Game::Key::Right, Game::Key::D])
-        turn_right(frame_time)
-      end
+      turn_left(frame_time) if Game::Keys.down?([Game::Key::Left, Game::Key::A])
+      turn_right(frame_time) if Game::Keys.down?([Game::Key::Right, Game::Key::D])
 
       if Game::Keys.pressed?([Game::Key::LShift, Game::Key::RShift])
         @drifting = true

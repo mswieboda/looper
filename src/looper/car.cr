@@ -56,7 +56,7 @@ module Looper
     end
 
     def self.max_speed
-      17
+      33
     end
 
     def self.turning
@@ -68,11 +68,11 @@ module Looper
     end
 
     def self.drift_rotation_increase
-      3
+      5
     end
 
     def self.brakes
-      10
+      15
     end
 
     def update(frame_time)

@@ -103,7 +103,7 @@ module Looper
       pos.y = G.screen_height - PADDING
 
       text = Game::Text.new(
-        text: "speed: #{(speed * 5).round(1)} mph",
+        text: "#{(speed * 3).round(1)} mph",
         x: pos.x,
         size: 18,
         spacing: 1,
