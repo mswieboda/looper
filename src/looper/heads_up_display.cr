@@ -112,18 +112,6 @@ module Looper
         color: Game::Color::Black.alpha(0.69_f32)
       ).draw
 
-      # speedometer arm
-      height = 10
-      rotation = scale(speed, 0, 33, 135, 315).to_f32
-      Game::Rectangle.new(
-        x: pos.x + radius,
-        y: pos.y - radius,
-        width: radius,
-        height: height,
-        origin: Game::Vector.new(x: 0, y: height / 2_f32),
-        rotation: rotation,
-      ).draw
-
       # speed text
       text = Game::Text.new(
         text: "#{(speed * 3).round(1)} mph",
@@ -132,8 +120,50 @@ module Looper
         color: TEXT_COLOR
       )
       text.x = pos.x + radius - text.width / 2_f32
-      text.y = pos.y - radius + text.height # - text.height / 2_f32
+      text.y = pos.y - radius + text.height
       text.draw
+
+      # speedometer arm
+      thickness = 10
+      length = radius * 0.83_f32
+      rotation = scale(speed, 0, 33, 135, 315).to_f32
+
+      r = thickness / 2_f32
+      tri_rotation = 90 + rotation
+      data = [
+        {r: -r, t: tri_rotation},
+        {r: -length, t: 90 + tri_rotation},
+        {r: r, t: tri_rotation}
+      ]
+
+      # rotate
+      points = data.map do |p|
+        {
+          x: Trig.rotate_x(p[:r], p[:t]),
+          y: Trig.rotate_y(p[:r], p[:t])
+        }
+      end
+
+      # position
+      points = points.map do |p|
+        {
+          x: pos.x + radius + p[:x],
+          y: pos.y - radius + p[:y]
+        }
+      end
+
+      Game::Triangle.new(
+        x1: points[0][:x].to_f32, y1: points[0][:y].to_f32,
+        x2: points[1][:x].to_f32, y2: points[1][:y].to_f32,
+        x3: points[2][:x].to_f32, y3: points[2][:y].to_f32,
+      ).draw
+
+      # speedometer arm center half circle cover
+      Game::Circle.new(
+        center_x: pos.x + radius,
+        center_y: pos.y - radius,
+        radius: thickness / 2_f32,
+      ).draw
     end
 
     def scale(num, rmin, rmax, tmin, tmax)
