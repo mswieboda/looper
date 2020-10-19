@@ -26,7 +26,7 @@ module Looper
       draw_laps(pos)
 
       # bottom left
-      draw_speed
+      draw_speedometer
     end
 
     def draw_editable(pos)
@@ -97,21 +97,47 @@ module Looper
       pos.y += text.height + PADDING
     end
 
-    def draw_speed
+    def draw_speedometer
       pos = Game::Vector.new
       pos.x = PADDING
       pos.y = G.screen_height - PADDING
 
+      radius = 75
+
+      # background circle
+      Game::Circle.new(
+        center_x: pos.x + radius,
+        center_y: pos.y - radius,
+        radius: radius,
+        color: Game::Color::Black.alpha(0.69_f32)
+      ).draw
+
+      # speedometer arm
+      height = 10
+      rotation = scale(speed, 0, 33, 135, 315).to_f32
+      Game::Rectangle.new(
+        x: pos.x + radius,
+        y: pos.y - radius,
+        width: radius,
+        height: height,
+        origin: Game::Vector.new(x: 0, y: height / 2_f32),
+        rotation: rotation,
+      ).draw
+
+      # speed text
       text = Game::Text.new(
         text: "#{(speed * 3).round(1)} mph",
-        x: pos.x,
         size: 18,
         spacing: 1,
         color: TEXT_COLOR
       )
-      pos.y -= text.height
-      text.y = pos.y
+      text.x = pos.x + radius - text.width / 2_f32
+      text.y = pos.y - radius + text.height # - text.height / 2_f32
       text.draw
+    end
+
+    def scale(num, rmin, rmax, tmin, tmax)
+      (num - rmin) / (rmax - rmin) * (tmax - tmin) + tmin
     end
   end
 end
