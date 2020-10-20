@@ -1,8 +1,5 @@
 module Looper
   abstract class Track
-    GAME_OVER_DELAY = 0.3
-
-    getter? game_over_started
     property? paused
     getter laps : UInt16
     getter lap_time : Float32
@@ -10,8 +7,6 @@ module Looper
 
     delegate :exit?, to: @menu
     delegate :speed, to: @player
-
-    @game_over_delay : Float32
 
     @player : Player
 
@@ -25,8 +20,6 @@ module Looper
     @menu : PauseMenu
 
     def initialize(@difficulty = "")
-      @game_over_started = false
-      @game_over_delay = 0_f32
       @paused = true
       @laps = 0_u8
       @lap_timer_paused = true
@@ -50,8 +43,6 @@ module Looper
     end
 
     def restart
-      @game_over_started = false
-      @game_over_delay = 0_f32
       @laps = 0_u8
       @lap_timer_paused = true
       lap_times.clear
@@ -85,8 +76,6 @@ module Looper
 
       @lap_time += frame_time unless @lap_timer_paused # @lap_timer.get.to_f32 - @lap_time
 
-      @game_over_delay += frame_time if game_over_started?
-
       @player.update(frame_time)
       @view.update(frame_time, @player)
 
@@ -97,11 +86,12 @@ module Looper
         return
       end
 
+      @player.input(frame_time)
+
+      # TODO: apply grass friction
       # road
       if road_collision?
-        @player.input(frame_time)
-      else
-        @game_over_started = true
+        # TODO: apply road friction
       end
 
       # checkpoints
@@ -164,7 +154,7 @@ module Looper
     end
 
     def game_over?
-      @game_over_delay >= GAME_OVER_DELAY
+      false
     end
 
     def difficulty=(difficulty)
