@@ -1,17 +1,18 @@
 module Looper
   class HeadsUpDisplay
     property laps : UInt16
-    property lap_time : Float64
-    property lap_times : Array(Float64)
+    property lap_time : Float32
+    property lap_times : Array(Float32)
     property speed : Int32 | Float32
 
     PADDING = 15
+    LAP_TEXT_SIZE = 21
     TEXT_COLOR = Game::Color::White
 
     def initialize
       @laps = 0
       @lap_time = 0.0
-      @lap_times = [] of Float64
+      @lap_times = [] of Float32
       @speed = 0
     end
 
@@ -48,7 +49,7 @@ module Looper
         text: "laps: #{laps}",
         x: pos.x,
         y: pos.y,
-        size: 18,
+        size: LAP_TEXT_SIZE,
         spacing: 1,
         color: TEXT_COLOR
       )
@@ -57,24 +58,14 @@ module Looper
       pos.y += text.height + PADDING
 
       # lap time
-      text = Game::Text.new(
-        text: "lap_time: #{lap_time.round(3)}",
-        x: pos.x,
-        y: pos.y,
-        size: 18,
-        spacing: 1,
-        color: TEXT_COLOR
-      )
-      text.draw
-
-      pos.y += text.height + PADDING
+      draw_lap_time(pos)
 
       # laps
       text = Game::Text.new(
         text: "laps:",
         x: pos.x,
         y: pos.y,
-        size: 18,
+        size: LAP_TEXT_SIZE,
         spacing: 1,
         color: TEXT_COLOR
       )
@@ -84,15 +75,56 @@ module Looper
         pos.y += text.height
 
         text = Game::Text.new(
-          text: "#{lap_time.round(3)} sec",
+          text: "#{lap_time.round(2)} sec",
           x: pos.x,
           y: pos.y,
-          size: 18,
+          size: LAP_TEXT_SIZE,
           spacing: 1,
           color: TEXT_COLOR
         )
         text.draw
       end
+
+      pos.y += text.height + PADDING
+    end
+
+    def draw_lap_time(pos)
+      # lap time: label
+      text = Game::Text.new(
+        text: "lap time: ",
+        x: pos.x,
+        y: pos.y,
+        size: LAP_TEXT_SIZE,
+        spacing: 1,
+        color: TEXT_COLOR
+      )
+      text.draw
+
+      lap_time_x = pos.x + text.width
+
+      # lap time number text
+      text = Game::Text.new(
+        text: "#{lap_time.round(2)}",
+        x: lap_time_x,
+        y: pos.y,
+        size: LAP_TEXT_SIZE,
+        spacing: 1,
+        color: TEXT_COLOR
+      )
+      text.draw
+
+      digit_chars = ((lap_time < 1 ? 0.99_f32 + lap_time : lap_time).round(2) * 100).to_i.to_s.chars.size
+      text_full = Game::Text.new(text: "." + "9" * digit_chars, size: LAP_TEXT_SIZE, spacing: 1)
+
+      # seconds label
+      Game::Text.new(
+        text: " sec",
+        x: lap_time_x + text_full.width,
+        y: pos.y,
+        size: LAP_TEXT_SIZE,
+        spacing: 1,
+        color: TEXT_COLOR
+      ).draw
 
       pos.y += text.height + PADDING
     end
