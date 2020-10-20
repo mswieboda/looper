@@ -113,13 +113,10 @@ module Looper
       )
       text.draw
 
-      digit_chars = ((lap_time < 1 ? 0.99_f32 + lap_time : lap_time).round(2) * 100).to_i.to_s.chars.size
-      text_full = Game::Text.new(text: "." + "9" * digit_chars, size: LAP_TEXT_SIZE, spacing: 1)
-
       # seconds label
       Game::Text.new(
         text: " sec",
-        x: lap_time_x + text_full.width,
+        x: lap_time_x + fixed_width(lap_time, 2, LAP_TEXT_SIZE),
         y: pos.y,
         size: LAP_TEXT_SIZE,
         spacing: 1,
@@ -144,16 +141,28 @@ module Looper
         color: Game::Color::Black.alpha(0.69_f32)
       ).draw
 
-      # speed text
-      text = Game::Text.new(
-        text: "#{(speed * 3).round(1)} mph",
+      # speed text number
+      speed_mph = speed * 3
+      text_num = Game::Text.new(
+        text: "#{speed_mph.round(2)}",
         size: 18,
         spacing: 1,
         color: TEXT_COLOR
       )
-      text.x = pos.x + radius - text.width / 2_f32
-      text.y = pos.y - radius + text.height
-      text.draw
+      text_num.x = pos.x + radius - text_num.width / 2_f32
+      text_num.y = pos.y - radius + text_num.height
+      text_num.draw
+
+      # speed mph label
+      text_label = Game::Text.new(
+        text: "mph",
+        size: 18,
+        spacing: 1,
+        color: TEXT_COLOR
+      )
+      text_label.x = pos.x + radius - text_label.width / 2_f32
+      text_label.y = text_num.y + text_label.height
+      text_label.draw
 
       # speedometer arm
       thickness = 10
@@ -200,6 +209,12 @@ module Looper
 
     def scale(num, rmin, rmax, tmin, tmax)
       (num - rmin) / (rmax - rmin) * (tmax - tmin) + tmin
+    end
+
+    def fixed_width(number, decimals, text_size)
+      digit_chars = ((number < 1 ? 0.99_f32 + number : number).round(decimals) * 10 ** decimals).to_i.to_s.chars.size
+      text_full = Game::Text.new(text: "." + "9" * digit_chars, size: text_size, spacing: 1)
+      text_full.width
     end
   end
 end
