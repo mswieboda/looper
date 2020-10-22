@@ -130,16 +130,16 @@ module Looper
     end
 
     def draw(view_x, view_y)
-      @skids.each(&.draw(view_x, view_y))
+      @skids.each(&.draw(view_x + @shake_x, view_y + @shake_y))
 
       @sprite.draw(
-        x: view_x + x,
-        y: view_y + y,
+        x: view_x + x + @shake_x,
+        y: view_y + y + @shake_y,
         centered: true,
         rotation: rotation
       )
 
-      super(view_x, view_y)
+      super(view_x + @shake_x, view_y + @shake_y)
     end
 
     def hit_box

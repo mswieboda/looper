@@ -13,6 +13,8 @@ module Looper
     getter? player
 
     @last_rotation : Int32 | Float32
+    @shake_x : Int32 | Float32
+    @shake_y : Int32 | Float32
 
     def initialize(x, y, width, height, @player = false)
       super(
@@ -30,6 +32,8 @@ module Looper
       @braking = false
       @reverse = false
       @offroad = false
+      @shake_x = 0
+      @shake_y = 0
     end
 
     def self.initial_acceleration
@@ -84,6 +88,14 @@ module Looper
       0.15_f32
     end
 
+    def self.max_shake_amount
+      169_f32
+    end
+
+    def self.shake_frequency
+      0.33_f32
+    end
+
     def moving?
       @speed > 0
     end
@@ -136,6 +148,21 @@ module Looper
 
       @x += Trig.rotate_x(@speed, angle).to_f32
       @y += Trig.rotate_y(@speed, angle).to_f32
+
+      if offroad?
+        if rand <= self.class.shake_frequency
+          amount = (rand(self.class.max_shake_amount) * frame_time).to_f32
+          @shake_x = rand <= 0.5 ? amount : -amount
+        end
+
+        if rand <= self.class.shake_frequency
+          amount = (rand(self.class.max_shake_amount) * frame_time).to_f32
+          @shake_y = rand <= 0.5 ? amount : -amount
+        end
+      else
+        @shake_x = 0
+        @shake_y = 0
+      end
 
       # reduce speed each frame
       @speed -= self.class.drag * frame_time
