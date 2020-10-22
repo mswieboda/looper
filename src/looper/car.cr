@@ -48,11 +48,11 @@ module Looper
     end
 
     def self.initial_acceleration
-      10
+      5
     end
 
     def self.acceleration
-      17
+      5
     end
 
     def self.max_speed

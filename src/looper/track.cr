@@ -76,6 +76,11 @@ module Looper
 
       @lap_time += frame_time unless @lap_timer_paused # @lap_timer.get.to_f32 - @lap_time
 
+
+      @player.input(frame_time)
+
+      @player.offroad = !road_collision?
+
       @player.update(frame_time)
       @view.update(frame_time, @player)
 
@@ -84,14 +89,6 @@ module Looper
         @road_turns.each(&.update(frame_time, @view.view_x, @view.view_y))
         @checkpoints.each(&.update(frame_time, @view.view_x, @view.view_y))
         return
-      end
-
-      @player.input(frame_time)
-
-      # TODO: apply grass friction
-      # road
-      if road_collision?
-        # TODO: apply road friction
       end
 
       # checkpoints

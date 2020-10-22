@@ -6,6 +6,7 @@ module Looper
     getter speed : Int32 | Float32
     getter acceleration : Int32 | Float32
 
+    getter? offroad
     getter? drifting
     getter? braking
     getter? reverse
@@ -28,14 +29,15 @@ module Looper
       @drifting = false
       @braking = false
       @reverse = false
+      @offroad = false
     end
 
     def self.initial_acceleration
-      5
+      3
     end
 
     def self.acceleration
-      15
+      5
     end
 
     def self.max_acceleration
@@ -63,11 +65,23 @@ module Looper
     end
 
     def self.drift_braking
-      5
+      3
     end
 
     def self.brakes
       15
+    end
+
+    def self.offroad_friction
+      5
+    end
+
+    def self.max_offroad_acceleration
+      offroad_friction + drag + initial_acceleration
+    end
+
+    def self.offroad_speed_deceleration_factor
+      0.15_f32
     end
 
     def moving?
@@ -83,7 +97,15 @@ module Looper
         @acceleration += self.class.acceleration * frame_time
       end
 
+      @acceleration = @acceleration.clamp(..self.class.max_acceleration)
+      @acceleration = @acceleration.clamp(..self.class.max_offroad_acceleration) if offroad?
+
       @speed += @acceleration * frame_time * (reverse? ? -1 : 1)
+    end
+
+    def offroad=(value : Bool)
+      @offroad = value
+      @acceleration = -@speed * self.class.offroad_speed_deceleration_factor if @offroad
     end
 
     def turn_left(frame_time)
@@ -117,6 +139,7 @@ module Looper
 
       # reduce speed each frame
       @speed -= self.class.drag * frame_time
+      @speed -= self.class.offroad_friction * frame_time if offroad?
       @speed -= self.class.brakes * frame_time if braking?
       @speed -= self.class.drift_braking * frame_time if drifting?
       @speed = @speed.clamp(0, self.class.max_speed)

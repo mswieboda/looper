@@ -5,7 +5,7 @@ module Looper
 
     getter vehicle : Vehicle
 
-    delegate :x, :x=, :y, :y=, :width, :height, :collision?, :collisions?, :input, :speed, to: vehicle
+    delegate :x, :x=, :y, :y=, :width, :height, :collision?, :collisions?, :input, :speed, :offroad=, to: vehicle
 
     def initialize(x = 0, y = 0, difficulty = "")
       @vehicle = vehicle_class(difficulty).new(
@@ -35,6 +35,11 @@ module Looper
         y: y,
         player: true
       )
+    end
+
+    def offroad=(value : Bool)
+      return if value == vehicle.offroad?
+      vehicle.offroad = value
     end
   end
 end
